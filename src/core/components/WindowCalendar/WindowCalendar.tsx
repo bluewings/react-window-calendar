@@ -2,7 +2,16 @@ import * as React from 'react';
 import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import { useColumns, useEventHandlers, useRows } from '../../hooks';
-import { format, addMonths, differenceInMonths } from 'date-fns';
+import { format, addMonths, differenceInMonths,
+  getYear,
+  getMonth,
+  startOfMonth,
+  endOfMonth,
+  getDay,
+  getDaysInMonth,
+
+
+} from 'date-fns';
 type ScrollEvent = SyntheticEvent<HTMLDivElement>;
 
 type WindowCalendarProps222 = {
@@ -71,29 +80,103 @@ type WindowCalendarProps = {
 
 };
 
+const Calendar = (year, month) => {
+
+  const mid = new Date(year, month, 15);
+  const start = startOfMonth(mid);
+  const end = endOfMonth(mid);
+  const dayStart = getDay(start);
+  const daysInMonth = getDaysInMonth(mid)
+
+  const lists = [];
+
+  let rows = [];
+
+  // console.log(daysInMonth)
+  for (let i = 0; i < dayStart; i = i + 1) {
+    rows.push({
+      day: '.'
+    });
+  }
+
+  for (let i = 1; i <= daysInMonth; i = i + 1) {
+
+    rows.push({
+      day: i
+    });
+    if ((dayStart+ i) % 7 === 0 && rows.length > 0) {
+      lists.push(rows);
+      rows = [];
+    }
+  }
+
+  if (rows.length > 0) {
+    lists.push(rows);
+    rows = [];
+  }
+
+// console.lo
+
+  return (
+    <>
+    <h4>{`${year}-${month + 1} ${dayStart} `}</h4>
+    <table width='100%'>
+    {
+      lists.map((e, i) => {
+        return (
+          
+          <tr>
+          {
+e.map(f => {
+  return <td> {f.day} </td>
+})
+
+          }
+          </tr>
+        )
+      })
+    }
+    </table>
+    </>
+  )
+}
+
 const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   let { minDate, maxDate } = props;
 
-  minDate = minDate || new Date(2018, 0, 15)
-  maxDate = maxDate || new Date(2020, 11, 15)
+  minDate = minDate || new Date(2000, 0)
+  maxDate = maxDate || new Date(2050, 11)
 
   const months = differenceInMonths(maxDate, minDate) + 1;
 
-  const Cell = ({ rowIndex, columnIndex, className, style }) => (
-    <div className={className} style={style} data-row-index={rowIndex} data-column-index={columnIndex}>
-      
+  const Cell = ({ rowIndex, columnIndex, className, style }) => {
 
-      {format(
-        addMonths(minDate, rowIndex),
 
-        'YYYY-MM'
-      )}
-      {/* {rowIndex} */}
-    </div>
-  );
+
+    // {format(
+    //   addMonths(minDate, rowIndex),
+
+    //   'YYYY-MM'
+    // )}
+    // {/* {rowIndex} */}
+
+    const newD = addMonths(minDate, rowIndex);
+    const year = getYear(newD);
+    const month = getMonth(newD);
+
+    return (
+      <div className={className} style={style} data-row-index={rowIndex} data-column-index={columnIndex}>
+
+
+      {Calendar(year, month)}
+        
+  
+      </div>
+    );
+  }
 
   const rowHeight = () => {
-    return 100;
+    return 250;
   }
 
   // console.log(months)
