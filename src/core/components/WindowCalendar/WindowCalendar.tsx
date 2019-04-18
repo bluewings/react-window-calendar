@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
-import { useColumns, useEventHandlers, useRows } from '../../hooks';
+import { useColumns, useEventHandlers, useRows, useMonths } from '../../hooks';
 import { format, addMonths, differenceInMonths,
   getYear,
   getMonth,
@@ -12,6 +12,8 @@ import { format, addMonths, differenceInMonths,
 
 
 } from 'date-fns';
+import { css } from 'emotion';
+
 type ScrollEvent = SyntheticEvent<HTMLDivElement>;
 
 type WindowCalendarProps222 = {
@@ -80,7 +82,7 @@ type WindowCalendarProps = {
 
 };
 
-const Calendar = (year, month) => {
+const Calendar = (year, month, _month) => {
 
   const mid = new Date(year, month, 15);
   const start = startOfMonth(mid);
@@ -92,10 +94,12 @@ const Calendar = (year, month) => {
 
   let rows = [];
 
+  const rowscount = Math.ceil((dayStart + daysInMonth) / 7);
+
   // console.log(daysInMonth)
   for (let i = 0; i < dayStart; i = i + 1) {
     rows.push({
-      day: '.'
+      day: ''
     });
   }
 
@@ -115,12 +119,27 @@ const Calendar = (year, month) => {
     rows = [];
   }
 
+  
+
 // console.lo
 
-  return (
+const hdrStyle = {
+  position: _month.useDivider ? 'relative' : 'absolute',
+  display: 'flex',
+  height: 40,
+  fontSize: 14,
+  fontWeight: 700,
+  paddingLeft: 12,
+  alignItems   : 'center',
+  background:"#ddd",
+  boxSizing: 'border-box'
+}
+// const yyyymm = format(new Date(year,month), 'MMM YYYY')
+const yyyymm = format(new Date(year,month), 'YYYY년 M월')
+return (
     <>
-    <h4>{`${year}-${month + 1} ${dayStart} `}</h4>
-    <table width='100%'>
+    <div style={hdrStyle}>{yyyymm}</div>
+    <table width='100%' border='0' cellPadding={0} cellSpacing={0}>
     {
       lists.map((e, i) => {
         return (
@@ -141,13 +160,56 @@ e.map(f => {
   )
 }
 
-const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
-  let { minDate, maxDate } = props;
+const rootStyle = css({
+  position: 'relative',
+  h4: {
+    height: 40,
+    lineHeight: '40px',
+    fontSize: 14,
+    fontWeight: 700,
 
-  minDate = minDate || new Date(2000, 0)
-  maxDate = maxDate || new Date(2050, 11)
+    padding: 0,
+    margin: 0
+  },
+  table: {
+
+    border: 'none',
+    td: {
+      height: 40,
+      padding: 0,
+      textAlign: 'center',
+      fontSize: 14,
+      background: '#eee'
+      // borderLeft: '1px solid black',
+      // borderBottom: '1px solid black',
+
+
+    }
+  }
+})
+
+const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
+  // let { minDate, maxDate } = props;
+
+
+  const minDate = useMemo(() => {
+    return props.minDate || new Date(2000, 0);
+  }, [props.minDate])
+
+  const maxDate = useMemo(() => {
+    return props.maxDate || new Date(2050, 11);
+  }, [props.maxDate])
+
+  const allMonths = useMonths(minDate, maxDate);
+
+
+
+  // useMonths
 
   const months = differenceInMonths(maxDate, minDate) + 1;
+
+
+
 
   const Cell = ({ rowIndex, columnIndex, className, style }) => {
 
@@ -159,34 +221,68 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     //   'YYYY-MM'
     // )}
     // {/* {rowIndex} */}
-
-    const newD = addMonths(minDate, rowIndex);
+    if (rowIndex === 0) {
+      return 'S_M_T_W_T_F_S'
+    }
+    const _rowIndex = rowIndex - 1;
+    const newD = addMonths(minDate, _rowIndex);
     const year = getYear(newD);
     const month = getMonth(newD);
+
+    
+
+    const _month = allMonths[_rowIndex];
 
     return (
       <div className={className} style={style} data-row-index={rowIndex} data-column-index={columnIndex}>
 
 
-      {Calendar(year, month)}
+      {Calendar(year, month, _month)}
         
   
       </div>
     );
   }
 
-  const rowHeight = () => {
-    return 250;
-  }
+  // const rowHeight = () => {
+  //   return 250;
+  // }
+
+  const HEIGHT = 40;
+
+  const rowHeight = useMemo(() => {
+
+    return (rowIndex) => {
+      // console.log(2)
+      // console.log(rowIndex);
+      if (rowIndex === 0) {
+        return HEIGHT;
+      }
+      const _rowIndex = rowIndex - 1;
+
+      const { numOfWeeks, useDivider } = allMonths[_rowIndex];
+
+
+
+      return (numOfWeeks + (useDivider ? 1 : 0)) * HEIGHT;
+      // return 200;
+    }
+
+  }, [allMonths]);
+  // return null;
+
+  
 
   // console.log(months)
   return (
     <>
     <h3>{months}</h3>
     <pre>{JSON.stringify({minDate, maxDate})}</pre>
+    <div className={rootStyle}>
     <WindowGrid
-      width={400}
+      width={300}
       height={500}
+      fixedTopCount={1}
     
       rowCount={months}
       rowHeight={rowHeight}
@@ -198,6 +294,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
       {Cell}
 
     </WindowGrid>
+    </div>
     </>
   //   <WindowGrid
   //   rowCount={100}
