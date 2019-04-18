@@ -271,12 +271,22 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   }, [allMonths]);
   // return null;
 
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  const handleScroll = (scrollInfo) => {
+    // console.log(scrollInfo);
+    if (isScrolling !== scrollInfo.isScrolling) {
+      setIsScrolling(scrollInfo.isScrolling);
+    }
+  }
+
   
 
   // console.log(months)
   return (
     <>
     <h3>{months}</h3>
+    <h3>{isScrolling ? 'scrolling' : 'no-scrolling'}</h3>
     <pre>{JSON.stringify({minDate, maxDate})}</pre>
     <div className={rootStyle}>
     <WindowGrid
@@ -290,6 +300,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
       columnWidth={100}
       fillerColumn='stretch'
       fitToGrid
+      onScroll={handleScroll}
     >
       {Cell}
 
