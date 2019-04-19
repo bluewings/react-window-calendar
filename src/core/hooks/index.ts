@@ -5,5 +5,6 @@ import useCalendar from './useCalendar';
 import useFormats from './useFormats';
 import useMonths from './useMonths';
 import useStrings from './useStrings';
+import useWeekdays from './useWeekdays';
 
-export { useColumns, useEventHandlers, useRows, useCalendar, useFormats, useMonths, useStrings };
+export { useColumns, useEventHandlers, useRows, useCalendar, useFormats, useMonths, useStrings, useWeekdays };

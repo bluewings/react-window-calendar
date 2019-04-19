@@ -1,7 +1,16 @@
 import * as React from 'react';
 import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
-import { useColumns, useEventHandlers, useRows, useCalendar, useMonths, useStrings } from '../../hooks';
+import {
+  useColumns,
+  useEventHandlers,
+  useRows,
+  useCalendar,
+  useFormats,
+  useMonths,
+  useStrings,
+  useWeekdays,
+} from '../../hooks';
 import { format } from 'date-fns';
 import { css } from 'emotion';
 
@@ -90,6 +99,11 @@ type WindowCalendarProps = {
   // Callback to apply formatting to the month and year in the Day Picker header
   // formatYear
   // (date: Date) => string
+
+  formatDay?: Function;
+  formatMonthDayYear?: Function;
+  formatMonthYear?: Function;
+  formatYear?: Function;
 };
 
 const rootStyle = css({
@@ -125,19 +139,30 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   }, [props.minDate]);
 
   const maxDate = useMemo(() => {
-    return props.maxDate || new Date(2050, 11);
+    return props.maxDate || new Date(2020, 11);
   }, [props.maxDate]);
 
   const strings = useStrings(props.strings);
 
+  const [formatDay, formatMonthDayYear, formatMonthYear, formatYear] = useFormats(
+    props.formatDay,
+    props.formatMonthDayYear,
+    props.formatMonthYear,
+    props.formatYear,
+    strings,
+  );
+
   const allMonths = useMonths(minDate, maxDate);
 
-  const calendar = useCalendar();
+  const calendar = useCalendar(formatDay, formatMonthYear);
+
+  const weekdays = useWeekdays(formatDay, formatMonthYear, strings);
 
   const Cell = ({ rowIndex, className, style }) => {
     let children;
     if (rowIndex === 0) {
-      children = 'S_M_T_W_T_F_S';
+      // children = 'S_M_T_W_T_F_S';
+      children = weekdays();
     } else {
       const _rowIndex = rowIndex - 1;
       const _month = allMonths[_rowIndex];

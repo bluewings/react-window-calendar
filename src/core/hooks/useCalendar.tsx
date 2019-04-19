@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { useMemo } from 'react';
 import { format } from 'date-fns';
 
-const Calendar = (_month) => {
+const Calendar = (_month, { formatDay, formatMonthYear }) => {
   const { year, month, startDay, daysInMonth } = _month;
   const mid = new Date(year, month, 15);
   // const start = startOfMonth(mid);
@@ -47,11 +48,13 @@ const Calendar = (_month) => {
     fontWeight: 700,
     paddingLeft: 12,
     alignItems: 'center',
-    background: '#ddd',
+    // background: '#ddd',
     boxSizing: 'border-box',
   };
   // const yyyymm = format(new Date(year,month), 'MMM YYYY')
-  const yyyymm = format(new Date(year, month), 'YYYY년 M월');
+  // const yyyymm = format(new Date(year, month), 'YYYY년 M월');
+
+  const yyyymm = formatMonthYear(new Date(year, month));
   return (
     <>
       <div style={hdrStyle}>{yyyymm}</div>
@@ -70,12 +73,16 @@ const Calendar = (_month) => {
   );
 };
 
-function useCalendar() {
-  return (month) => {
-    // console.log(month);
+function useCalendar(formatDay, formatMonthYear) {
+  return useMemo(() => {
+    const opt = { formatDay, formatMonthYear };
 
-    return Calendar(month);
-  };
+    return (month) => {
+      // console.log(month);
+
+      return Calendar(month, opt);
+    };
+  }, [formatDay, formatMonthYear]);
 }
 
 export default useCalendar;

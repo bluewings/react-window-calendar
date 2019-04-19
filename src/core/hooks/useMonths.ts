@@ -14,6 +14,7 @@ function useMonths(minDate: Date, maxDate: Date) {
       const numOfWeeks = Math.ceil((startDay + daysInMonth) / 7);
       const headerSpaceRequired = startDay < 3;
       return {
+        date: new Date(year, month),
         year,
         month,
         startDay,
