@@ -124,7 +124,7 @@ const rootStyle = css({
       padding: 0,
       textAlign: 'center',
       fontSize: 14,
-      background: '#eee',
+      // background: '#eee',
       // borderLeft: '1px solid black',
       // borderBottom: '1px solid black',
     },
@@ -156,13 +156,15 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   const calendar = useCalendar(formatDay, formatMonthYear);
 
-  const weekdays = useWeekdays(formatDay, formatMonthYear, strings);
+  console.log('> strings', strings);
+
+  const weekdays = useWeekdays(strings);
 
   const Cell = ({ rowIndex, className, style }) => {
     let children;
     if (rowIndex === 0) {
       // children = 'S_M_T_W_T_F_S';
-      children = weekdays();
+      children = weekdays;
     } else {
       const _rowIndex = rowIndex - 1;
       const _month = allMonths[_rowIndex];
@@ -245,9 +247,9 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   return (
     <>
-      <h3 onClick={handleClick}>
+      <p onClick={handleClick}>
         {velo} {isScrolling ? 'scrolling' : 'no-scrolling'} - {aaa}
-      </h3>
+      </p>
       <div className={rootStyle}>
         <WindowGrid
           ref={inputEl}

@@ -1,4 +1,6 @@
-const DayPickerStrings = {
+import { useMemo } from 'react';
+
+const defaultStrings = {
   months: [
     'January',
     'February',
@@ -18,8 +20,19 @@ const DayPickerStrings = {
   shortDays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
 };
 
-function useStrings(strings) {
-  return DayPickerStrings;
+function useStrings(strings: any) {
+  return useMemo(
+    () =>
+      Object.keys(defaultStrings).reduce((accum, key) => {
+        // @ts-ignore
+        let values: string[] = [...defaultStrings[key]];
+        if (strings && Array.isArray(strings[key])) {
+          values = [...strings[key], ...values.slice(strings[key].length)];
+        }
+        return { ...accum, [key]: values };
+      }, {}),
+    [strings],
+  );
 }
 
 export default useStrings;
