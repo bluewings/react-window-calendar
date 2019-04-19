@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useMemo } from 'react';
 import { format } from 'date-fns';
 
-const Calendar = (_month, { formatDay, formatMonthYear }) => {
+const Calendar = (_month, { classNames, formatDay, formatMonthYear }) => {
   const { year, month, startDay, daysInMonth } = _month;
   const mid = new Date(year, month, 15);
   // const start = startOfMonth(mid);
@@ -57,32 +57,34 @@ const Calendar = (_month, { formatDay, formatMonthYear }) => {
   const yyyymm = formatMonthYear(new Date(year, month));
   return (
     <>
-      <div style={hdrStyle}>{yyyymm}</div>
-      <table width="100%" border="0" cellPadding={0} cellSpacing={0}>
-        {lists.map((e, i) => {
-          return (
-            <tr>
-              {e.map((f) => {
-                return <td> {f.day} </td>;
-              })}
-            </tr>
-          );
-        })}
-      </table>
+      <div className={classNames.MONTH}>
+        <div style={hdrStyle}>{yyyymm}</div>
+        <table width="100%" border="0" cellPadding={0} cellSpacing={0}>
+          {lists.map((e, i) => {
+            return (
+              <tr>
+                {e.map((f) => {
+                  return <td> {f.day} </td>;
+                })}
+              </tr>
+            );
+          })}
+        </table>
+      </div>
     </>
   );
 };
 
-function useCalendar(formatDay, formatMonthYear) {
+function useCalendar(classNames, formatDay, formatMonthYear) {
   return useMemo(() => {
-    const opt = { formatDay, formatMonthYear };
+    const opt = { classNames, formatDay, formatMonthYear };
 
     return (month) => {
       // console.log(month);
 
       return Calendar(month, opt);
     };
-  }, [formatDay, formatMonthYear]);
+  }, [classNames, formatDay, formatMonthYear]);
 }
 
 export default useCalendar;

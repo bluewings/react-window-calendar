@@ -5,11 +5,13 @@ import {
   useColumns,
   useEventHandlers,
   useRows,
+  useClassNames,
   useCalendar,
   useFormats,
   useMonths,
   useStrings,
   useWeekdays,
+  useTheme,
 } from '../../hooks';
 import { format } from 'date-fns';
 import { css } from 'emotion';
@@ -142,6 +144,16 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     return props.maxDate || new Date(2020, 11);
   }, [props.maxDate]);
 
+  const weekdaysHeight = props.weekdaysHeight || 30;
+  const weekHeight = props.weekHeight || 60;
+
+  const classNames = useClassNames(props.classNames);
+
+  const theme = useTheme(props.theme, classNames, {
+    weekdaysHeight,
+    weekHeight,
+  });
+
   const strings = useStrings(props.strings);
 
   const [formatDay, formatMonthDayYear, formatMonthYear, formatYear] = useFormats(
@@ -154,11 +166,11 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   const allMonths = useMonths(minDate, maxDate);
 
-  const calendar = useCalendar(formatDay, formatMonthYear);
+  const calendar = useCalendar(classNames, formatDay, formatMonthYear);
 
   console.log('> strings', strings);
 
-  const weekdays = useWeekdays(strings);
+  const weekdays = useWeekdays(classNames, strings);
 
   const Cell = ({ rowIndex, className, style }) => {
     let children;
@@ -178,23 +190,23 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     );
   };
 
-  const HEIGHT = 40;
+  // const HEIGHT = 40;
 
   const rowHeight = useMemo(() => {
     return (rowIndex) => {
       // console.log(2)
       // console.log(rowIndex);
       if (rowIndex === 0) {
-        return HEIGHT;
+        return weekdaysHeight;
       }
       const _rowIndex = rowIndex - 1;
 
       const { numOfWeeks, headerSpaceRequired } = allMonths[_rowIndex];
 
-      return (numOfWeeks + (headerSpaceRequired ? 1 : 0)) * HEIGHT;
+      return (numOfWeeks + (headerSpaceRequired ? 1 : 0)) * weekHeight;
       // return 200;
     };
-  }, [allMonths]);
+  }, [allMonths, weekdaysHeight, weekHeight]);
   // return null;
 
   const [isScrolling, setIsScrolling] = useState(false);
@@ -250,22 +262,24 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
       <p onClick={handleClick}>
         {velo} {isScrolling ? 'scrolling' : 'no-scrolling'} - {aaa}
       </p>
-      <div className={rootStyle}>
-        <WindowGrid
-          ref={inputEl}
-          width={300}
-          height={500}
-          fixedTopCount={1}
-          rowCount={months}
-          rowHeight={rowHeight}
-          columnCount={1}
-          columnWidth={100}
-          fillerColumn="stretch"
-          scrollSnap={props.scrollSnap}
-          onScroll={handleScroll}
-        >
-          {Cell}
-        </WindowGrid>
+      <div className={theme}>
+        <div className={rootStyle}>
+          <WindowGrid
+            ref={inputEl}
+            width={300}
+            height={500}
+            fixedTopCount={1}
+            rowCount={months}
+            rowHeight={rowHeight}
+            columnCount={1}
+            columnWidth={100}
+            fillerColumn="stretch"
+            scrollSnap={props.scrollSnap}
+            onScroll={handleScroll}
+          >
+            {Cell}
+          </WindowGrid>
+        </div>
       </div>
     </>
   );

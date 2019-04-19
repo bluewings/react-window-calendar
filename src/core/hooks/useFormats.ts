@@ -2,17 +2,13 @@ import { useMemo } from 'react';
 import { format } from 'date-fns';
 
 const defaultFormats = {
-  formatDay: (date, strings) => {
-    return '?';
-  },
-  formatMonthDayYear: (date, strings) => {
-    return date;
-  },
+  formatDay: (date: Date, strings: any) => date,
+  formatMonthDayYear: (date: Date, strings: any) => date,
   formatMonthYear: (date: Date, strings: any) => `${strings.shortMonths[date.getMonth()]} ${date.getFullYear()}`,
   formatYear: (date: Date, strings: any) => date.getFullYear(),
 };
 
-function useFormat(customFormat, defaultFormat, strings) {
+function useFormat(customFormat: Function | string, defaultFormat: Function, strings: any) {
   return useMemo(() => {
     let formatFunc = defaultFormat;
     if (typeof customFormat === 'function') {
@@ -37,11 +33,6 @@ function useFormats(
     useFormat(formatMonthYear, defaultFormats.formatMonthYear, strings),
     useFormat(formatYear, defaultFormats.formatYear, strings),
   ];
-
-  // useMemo(() => {
-  //   return (date) => {
-
-  //     return formatDay(date, strings);
 }
 
 export default useFormats;

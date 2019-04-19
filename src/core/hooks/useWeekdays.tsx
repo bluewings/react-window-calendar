@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useMemo } from 'react';
+import { CalendarStrings } from './useStrings';
 
-function useWeekdays({ shortDays }) {
+function useWeekdays(classNames, { shortDays }: CalendarStrings) {
   return useMemo(() => {
     return (
-      <ul>
-        {shortDays.map((e) => (
-          <li>{e}</li>
+      <ul className={classNames.WEEKDAYS}>
+        {shortDays.map((day: string) => (
+          <li>{day}</li>
         ))}
       </ul>
     );

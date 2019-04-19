@@ -1,5 +1,12 @@
 import { useMemo } from 'react';
 
+export type CalendarStrings = {
+  months: string[];
+  shortMonths: string[];
+  days: string[];
+  shortDays: string[];
+};
+
 const defaultStrings = {
   months: [
     'January',
@@ -20,7 +27,8 @@ const defaultStrings = {
   shortDays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
 };
 
-function useStrings(strings: any) {
+function useStrings(strings: any): CalendarStrings {
+  // @ts-ignore
   return useMemo(
     () =>
       Object.keys(defaultStrings).reduce((accum, key) => {
