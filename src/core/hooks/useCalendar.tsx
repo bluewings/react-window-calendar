@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useMemo } from 'react';
 import { format } from 'date-fns';
 
-const Calendar = (_month, { classNames, formatDay, formatMonthYear }) => {
+const Calendar = (_month, { classNames, formatDay, formatMonthYear, direction, weekdays }) => {
   const { year, month, startDay, daysInMonth } = _month;
   // const mid = new Date(year, month, 15);
   // const start = startOfMonth(mid);
@@ -39,7 +39,7 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear }) => {
   // console.lo
 
   const hdrStyle = {
-    position: _month.headerSpaceRequired ? 'relative' : 'absolute',
+    position: _month.headerSpaceRequired || direction === 'horizontal' ? 'relative' : 'absolute',
     // display: 'flex',
     // height: 40,
     // fontSize: 14,
@@ -59,6 +59,8 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear }) => {
         <div className={classNames.MONTH_TITLE} style={hdrStyle}>
           {yyyymm}
         </div>
+
+        {direction === 'horizontal' && weekdays}
 
         {weeks.map((days, i) => (
           <ul className={classNames.WEEK}>
@@ -83,16 +85,16 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear }) => {
   );
 };
 
-function useCalendar(classNames, formatDay, formatMonthYear) {
+function useCalendar(classNames, formatDay, formatMonthYear, direction, weekdays) {
   return useMemo(() => {
-    const opt = { classNames, formatDay, formatMonthYear };
+    const opt = { classNames, formatDay, formatMonthYear, direction, weekdays };
 
     return (month) => {
       // console.log(month);
 
       return Calendar(month, opt);
     };
-  }, [classNames, formatDay, formatMonthYear]);
+  }, [classNames, formatDay, formatMonthYear, direction, weekdays]);
 }
 
 export default useCalendar;

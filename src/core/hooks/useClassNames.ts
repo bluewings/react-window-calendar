@@ -14,8 +14,8 @@ export type ClassNamesProps = {
   ROW_LAST?: string;
 
   SECTION?: string;
-  SECTION_TOP?: string;
-  SECTION_LEFT?: string;
+  HORIZONTAL?: string;
+  VERTICAL?: string;
   SECTION_RIGHT?: string;
   MONTH_OVERLAY?: string;
   MONTH_TITLE?: string;
@@ -43,8 +43,8 @@ export type ClassNames = {
   ROW_LAST: string;
 
   SECTION: string;
-  SECTION_TOP: string;
-  SECTION_LEFT: string;
+  HORIZONTAL: string;
+  VERTICAL: string;
   SECTION_RIGHT: string;
   MONTH_OVERLAY: string;
   MONTH_TITLE: string;
@@ -74,6 +74,8 @@ const CLASSNAMES = {
   MONTH: 'month',
   WEEK: 'week',
   DAY: 'day',
+  HORIZONTAL: 'horizontal',
+  VERTICAL: 'vertical',
 
   // WEEKDAYS: 'cell',
 
@@ -89,8 +91,7 @@ const CLASSNAMES = {
   ROW_LAST: 'row-last',
 
   SECTION: 'section',
-  SECTION_TOP: 'section-top',
-  SECTION_LEFT: 'section-left',
+
   SECTION_RIGHT: 'section-right',
 
   GUIDELINE: 'guideline',
@@ -103,7 +104,7 @@ const CLASSNAMES = {
   IS_SCROLLING: 'is-scrolling',
   IS_NOT_SCROLLING: 'is-not-scrolling',
 
-  // SECTION_TOP: 'section-top',
+  // HORIZONTAL: 'section-top',
   // ROW_EVEN: '',
 };
 

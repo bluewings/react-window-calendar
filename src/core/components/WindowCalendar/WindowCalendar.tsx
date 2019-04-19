@@ -20,6 +20,11 @@ import styles from './WindowCalendar.module.scss';
 
 type ScrollEvent = SyntheticEvent<HTMLDivElement>;
 
+enum Direction {
+  VERTICAL = 'vertical',
+  HORIZONTAL = 'horizontal',
+}
+
 type WindowCalendarProps222 = {
   scrollTop?: number;
   scrollLeft?: number;
@@ -86,6 +91,11 @@ type WindowCalendarProps = {
 
   dateRangeType: string;
 
+  direction: Direction;
+
+  numOfCalendars?: number;
+  gutter?: number;
+
   // https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.datavisualization.charting.daterangetype?view=netframework-4.8
 
   // ??? https://developers.google.com/ad-manager/api/reference/v201902/ReportService.DateRangeType
@@ -139,7 +149,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   // let { minDate, maxDate } = props;
 
   const minDate = useMemo(() => {
-    return props.minDate || new Date(2000, 0);
+    return props.minDate || new Date(2019, 0);
   }, [props.minDate]);
 
   const maxDate = useMemo(() => {
@@ -149,11 +159,21 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   const weekdaysHeight = props.weekdaysHeight || 30;
   const weekHeight = props.weekHeight || 30;
 
+  const numOfCalendars = props.numOfCalendars || 3;
+  const gutter = props.gutter || 20;
+
+  const direction = props.direction || Direction.VERTICAL;
+
   const classNames = useClassNames(props.classNames);
+
+  const [clientWidth, setClientWidth] = useState(0);
 
   const theme = useTheme(props.theme, classNames, {
     weekdaysHeight,
     weekHeight,
+    clientWidth,
+    direction,
+    gutter,
   });
 
   const strings = useStrings(props.strings);
@@ -168,21 +188,26 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   const allMonths = useMonths(minDate, maxDate);
 
-  const calendar = useCalendar(classNames, formatDay, formatMonthYear);
-
-  console.log('> strings', strings);
-
   const weekdays = useWeekdays(classNames, strings);
 
-  const Cell = ({ rowIndex, className, style }) => {
+  const calendar = useCalendar(classNames, formatDay, formatMonthYear, direction, weekdays);
+
+  // console.log('> strings', strings);
+
+  const Cell = ({ rowIndex, columnIndex, className, style }) => {
     let children;
-    if (rowIndex === 0) {
-      // children = 'S_M_T_W_T_F_S';
-      children = weekdays;
-    } else {
-      const _rowIndex = rowIndex - 1;
-      const _month = allMonths[_rowIndex];
+
+    if (direction === Direction.HORIZONTAL) {
+      const _month = allMonths[columnIndex];
       children = calendar(_month);
+    } else {
+      if (rowIndex === 0) {
+        children = weekdays;
+      } else {
+        const _rowIndex = rowIndex - 1;
+        const _month = allMonths[_rowIndex];
+        children = calendar(_month);
+      }
     }
 
     return (
@@ -241,6 +266,17 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     tmp.current.last = scrollInfo;
   };
 
+  const [scrollbarHeight, setScrollbarHeight] = useState(0);
+
+  const handleResize = (size) => {
+    if (clientWidth !== size.clientWidth) {
+      setClientWidth(size.clientWidth);
+    }
+    if (scrollbarHeight !== size.scrollbarHeight) {
+      setScrollbarHeight(size.scrollbarHeight);
+    }
+    // console.log(sizeInfo);
+  };
   // format()
   let aaa = '';
 
@@ -259,36 +295,63 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   const months = allMonths.length;
 
+  let windowGridProps = {
+    fixedTopCount: 1,
+    rowCount: months,
+    rowHeight: rowHeight,
+    columnCount: 1,
+    columnWidth: 100,
+    height: 300,
+    fillerColumn: 'stretch',
+  };
+
+  if (direction === Direction.HORIZONTAL) {
+    console.log('> scrollbarHeight', scrollbarHeight);
+    windowGridProps = {
+      // fixedTopCount: 1,
+      columnCount: months,
+      columnWidth: clientWidth / numOfCalendars,
+      rowCount: 1,
+      rowHeight: 100,
+      height: weekHeight * 7 + weekdaysHeight + scrollbarHeight,
+      fillerRow: 'stretch',
+      scrollSnap: true,
+    };
+  }
+
+  const rootClassName = [
+    styles.root,
+
+    direction === Direction.HORIZONTAL ? classNames.HORIZONTAL : classNames.VERTICAL,
+  ].join(' ');
+
   return (
     <>
-      <p onClick={handleClick}>
+      {/* <p onClick={handleClick}>
         {velo} {isScrolling ? 'scrolling' : 'no-scrolling'} - {aaa}
-      </p>
+      </p> */}
+      <div className={theme}>
+        <div className={rootClassName}>
+          <div className={rootStyle}>
+            <WindowGrid
+              ref={inputEl}
+              // width={700}
 
-      <div className={styles.root + ' ' + theme}>
-        <div className={rootStyle}>
-          <WindowGrid
-            ref={inputEl}
-            width={300}
-            height={500}
-            fixedTopCount={1}
-            rowCount={months}
-            rowHeight={rowHeight}
-            columnCount={1}
-            columnWidth={100}
-            fillerColumn="stretch"
-            scrollSnap={props.scrollSnap}
-            onScroll={handleScroll}
+              scrollSnap={props.scrollSnap}
+              onScroll={handleScroll}
+              onResize={handleResize}
+              {...windowGridProps}
+            >
+              {Cell}
+            </WindowGrid>
+          </div>
+          <div
+            className={classNames.MONTH_OVERLAY + ' ' + styles.overlayGradient}
+            style={{ opacity: velo > 500 ? 1 : 0 }}
           >
-            {Cell}
-          </WindowGrid>
-        </div>
-        <div
-          className={classNames.MONTH_OVERLAY + ' ' + styles.overlayGradient}
-          style={{ opacity: velo > 500 ? 1 : 0 }}
-        >
-          <div>{aaa}</div>
-          <div />
+            <div>{aaa}</div>
+            <div />
+          </div>
         </div>
       </div>
     </>

@@ -4,13 +4,28 @@ import { ClassNames } from './useClassNames';
 
 export type ThemeFunction = (classNames: ClassNames) => StringAnyMap;
 
-function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight }) {
+function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight, clientWidth, gutter, direction }) {
+  const paddingH = (direction === 'horizontal' ? gutter : 0) / 2;
   return css({
     position: 'relative',
     boxSizing: 'border-box',
     fontSize: 13,
     '*': {
       boxSizing: 'border-box',
+    },
+    [_.HORIZONTAL]: {
+      [_.MONTH_TITLE]: {
+        // background: 'blue'
+        textAlign: 'center',
+      },
+      // [_.MONTH]: {
+      //   background: 'yellow'
+      // }
+    },
+    [_.VERTICAL]: {
+      // [_.MONTH]: {
+      //   background: 'orange'
+      // }
     },
     [_.WEEKDAYS]: {
       display: 'flex',
@@ -46,7 +61,8 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight }) {
       justifyContent: 'center',
       flexDirection: 'column',
       position: 'absolute',
-      width: '100%',
+      // width: '100%',
+      width: clientWidth,
       textAlign: 'center',
       top: weekdaysHeight,
       height: weekHeight * 2,
@@ -66,6 +82,9 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight }) {
     },
     [_.MONTH]: {
       // border: '5px solid red',
+
+      paddingLeft: paddingH,
+      paddingRight: paddingH,
     },
     [_.WEEK]: {
       display: 'flex',
@@ -131,7 +150,7 @@ function useTheme(theme: ThemeFunction | undefined, classNames: ClassNames, styl
       [defaultTheme(dotClassNames, styleProps), theme && css(theme(dotClassNames, styleProps))]
         .filter((e) => e)
         .join(' '),
-    [theme, dotClassNames, styleProps],
+    [theme, dotClassNames, JSON.stringify(styleProps)],
   );
 }
 
