@@ -288,7 +288,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
           style={{ opacity: velo > 500 ? 1 : 0 }}
         >
           <div>{aaa}</div>
-          <div>&nbsp;</div>
+          <div />
         </div>
       </div>
     </>

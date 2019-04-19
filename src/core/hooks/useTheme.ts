@@ -42,6 +42,7 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight }) {
     [_.MONTH_OVERLAY]: {
       display: 'flex',
       // background: 'yellow',
+      // border: '1px solid black',
       justifyContent: 'center',
       flexDirection: 'column',
       position: 'absolute',
@@ -52,6 +53,13 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight }) {
       // MONTH_OVERLAY
       transition: 'opacity 0.5s linear',
       pointerEvents: 'none',
+      div: {
+        display: 'flex',
+        flexBasis: 0,
+        flexGrow: 1,
+        justifyContent: 'center',
+        flexDirection: 'column',
+      },
 
       // zIndex: 1000
       // border: '5px solid red',
