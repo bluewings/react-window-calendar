@@ -1,17 +1,8 @@
 import * as React from 'react';
 import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
-import { useColumns, useEventHandlers, useRows, useMonths } from '../../hooks';
-import { format, addMonths, differenceInMonths,
-  getYear,
-  getMonth,
-  startOfMonth,
-  endOfMonth,
-  getDay,
-  getDaysInMonth,
-
-
-} from 'date-fns';
+import { useColumns, useEventHandlers, useRows, useCalendar, useMonths, useStrings } from '../../hooks';
+import { format } from 'date-fns';
 import { css } from 'emotion';
 
 type ScrollEvent = SyntheticEvent<HTMLDivElement>;
@@ -44,9 +35,7 @@ type WindowCalendarProps222 = {
 
   containerStyle?: any;
   guideline?: boolean;
-
 };
-
 
 type WindowCalendarProps = {
   scrollTop?: number;
@@ -80,85 +69,28 @@ type WindowCalendarProps = {
   minDate?: string;
   maxDate?: string;
 
+  scrollSnap?: boolean;
+
+  dateRangeType: string;
+
+  // https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.datavisualization.charting.daterangetype?view=netframework-4.8
+
+  // ??? https://developers.google.com/ad-manager/api/reference/v201902/ReportService.DateRangeType
+
+  // https://developer.microsoft.com/en-us/fabric#/components/Calendar
+
+  //   formatDay
+  // (date: Date) => string
+  // Callback to apply formatting to the days in the Day Picker calendar
+  // formatMonthDayYear
+  // (date: Date, strings?: ICalendarStrings) => string
+  // Callback to apply formatting to mmmm d, yyyy formated dates
+  // formatMonthYear
+  // (date: Date, strings?: ICalendarStrings) => string
+  // Callback to apply formatting to the month and year in the Day Picker header
+  // formatYear
+  // (date: Date) => string
 };
-
-const Calendar = (year, month, _month) => {
-
-  const mid = new Date(year, month, 15);
-  const start = startOfMonth(mid);
-  const end = endOfMonth(mid);
-  const dayStart = getDay(start);
-  const daysInMonth = getDaysInMonth(mid)
-
-  const lists = [];
-
-  let rows = [];
-
-  const rowscount = Math.ceil((dayStart + daysInMonth) / 7);
-
-  // console.log(daysInMonth)
-  for (let i = 0; i < dayStart; i = i + 1) {
-    rows.push({
-      day: ''
-    });
-  }
-
-  for (let i = 1; i <= daysInMonth; i = i + 1) {
-
-    rows.push({
-      day: i
-    });
-    if ((dayStart+ i) % 7 === 0 && rows.length > 0) {
-      lists.push(rows);
-      rows = [];
-    }
-  }
-
-  if (rows.length > 0) {
-    lists.push(rows);
-    rows = [];
-  }
-
-  
-
-// console.lo
-
-const hdrStyle = {
-  position: _month.useDivider ? 'relative' : 'absolute',
-  display: 'flex',
-  height: 40,
-  fontSize: 14,
-  fontWeight: 700,
-  paddingLeft: 12,
-  alignItems   : 'center',
-  background:"#ddd",
-  boxSizing: 'border-box'
-}
-// const yyyymm = format(new Date(year,month), 'MMM YYYY')
-const yyyymm = format(new Date(year,month), 'YYYY년 M월')
-return (
-    <>
-    <div style={hdrStyle}>{yyyymm}</div>
-    <table width='100%' border='0' cellPadding={0} cellSpacing={0}>
-    {
-      lists.map((e, i) => {
-        return (
-          
-          <tr>
-          {
-e.map(f => {
-  return <td> {f.day} </td>
-})
-
-          }
-          </tr>
-        )
-      })
-    }
-    </table>
-    </>
-  )
-}
 
 const rootStyle = css({
   position: 'relative',
@@ -169,89 +101,59 @@ const rootStyle = css({
     fontWeight: 700,
 
     padding: 0,
-    margin: 0
+    margin: 0,
   },
   table: {
-
     border: 'none',
     td: {
       height: 40,
       padding: 0,
       textAlign: 'center',
       fontSize: 14,
-      background: '#eee'
+      background: '#eee',
       // borderLeft: '1px solid black',
       // borderBottom: '1px solid black',
-
-
-    }
-  }
-})
+    },
+  },
+});
 
 const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   // let { minDate, maxDate } = props;
 
-
   const minDate = useMemo(() => {
     return props.minDate || new Date(2000, 0);
-  }, [props.minDate])
+  }, [props.minDate]);
 
   const maxDate = useMemo(() => {
     return props.maxDate || new Date(2050, 11);
-  }, [props.maxDate])
+  }, [props.maxDate]);
+
+  const strings = useStrings(props.strings);
 
   const allMonths = useMonths(minDate, maxDate);
 
+  const calendar = useCalendar();
 
-
-  // useMonths
-
-  const months = differenceInMonths(maxDate, minDate) + 1;
-
-
-
-
-  const Cell = ({ rowIndex, columnIndex, className, style }) => {
-
-
-
-    // {format(
-    //   addMonths(minDate, rowIndex),
-
-    //   'YYYY-MM'
-    // )}
-    // {/* {rowIndex} */}
+  const Cell = ({ rowIndex, className, style }) => {
+    let children;
     if (rowIndex === 0) {
-      return 'S_M_T_W_T_F_S'
+      children = 'S_M_T_W_T_F_S';
+    } else {
+      const _rowIndex = rowIndex - 1;
+      const _month = allMonths[_rowIndex];
+      children = calendar(_month);
     }
-    const _rowIndex = rowIndex - 1;
-    const newD = addMonths(minDate, _rowIndex);
-    const year = getYear(newD);
-    const month = getMonth(newD);
-
-    
-
-    const _month = allMonths[_rowIndex];
 
     return (
-      <div className={className} style={style} data-row-index={rowIndex} data-column-index={columnIndex}>
-
-
-      {Calendar(year, month, _month)}
-        
-  
+      <div className={className} style={style}>
+        {children}
       </div>
     );
-  }
-
-  // const rowHeight = () => {
-  //   return 250;
-  // }
+  };
 
   const HEIGHT = 40;
 
   const rowHeight = useMemo(() => {
-
     return (rowIndex) => {
       // console.log(2)
       // console.log(rowIndex);
@@ -260,66 +162,86 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
       }
       const _rowIndex = rowIndex - 1;
 
-      const { numOfWeeks, useDivider } = allMonths[_rowIndex];
+      const { numOfWeeks, headerSpaceRequired } = allMonths[_rowIndex];
 
-
-
-      return (numOfWeeks + (useDivider ? 1 : 0)) * HEIGHT;
+      return (numOfWeeks + (headerSpaceRequired ? 1 : 0)) * HEIGHT;
       // return 200;
-    }
-
+    };
   }, [allMonths]);
   // return null;
 
   const [isScrolling, setIsScrolling] = useState(false);
+  const [rowIdx, setRowIdx] = useState(0);
+
+  const tmp = useRef({});
+
+  const [velo, setVelo] = useState();
 
   const handleScroll = (scrollInfo) => {
-    // console.log(scrollInfo);
     if (isScrolling !== scrollInfo.isScrolling) {
       setIsScrolling(scrollInfo.isScrolling);
     }
+    if (rowIdx !== scrollInfo.rowStartIndex - 1) {
+      setRowIdx(scrollInfo.rowStartIndex - 1);
+    }
+    if (scrollInfo.isScrolling && tmp.current.last && tmp.current.last.isScrolling) {
+      setVelo(
+        Math.abs(
+          ~~(
+            ((scrollInfo.scrollTop - tmp.current.last.scrollTop) /
+              (scrollInfo.eventTime - tmp.current.last.eventTime)) *
+            1000
+          ),
+        ),
+      );
+    } else {
+      setVelo(null);
+    }
+    tmp.current.last = scrollInfo;
+  };
+
+  // format()
+  let aaa = '';
+
+  if (rowIdx >= 0) {
+    const { year, month } = allMonths[rowIdx];
+    aaa = format(new Date(year, month), 'YYYY년 M월');
   }
 
-  
+  const inputEl = useRef(null);
 
-  // console.log(months)
+  const handleClick = () => {
+    console.log(inputEl.current);
+
+    inputEl.current.scrollTo({ rowIndex: 100, duration: 500, easing: 'easeInOutCubic' });
+  };
+
+  const months = allMonths.length;
+
   return (
     <>
-    <h3>{months}</h3>
-    <h3>{isScrolling ? 'scrolling' : 'no-scrolling'}</h3>
-    <pre>{JSON.stringify({minDate, maxDate})}</pre>
-    <div className={rootStyle}>
-    <WindowGrid
-      width={300}
-      height={500}
-      fixedTopCount={1}
-    
-      rowCount={months}
-      rowHeight={rowHeight}
-      columnCount={1}
-      columnWidth={100}
-      fillerColumn='stretch'
-      fitToGrid
-      onScroll={handleScroll}
-    >
-      {Cell}
-
-    </WindowGrid>
-    </div>
+      <h3 onClick={handleClick}>
+        {velo} {isScrolling ? 'scrolling' : 'no-scrolling'} - {aaa}
+      </h3>
+      <div className={rootStyle}>
+        <WindowGrid
+          ref={inputEl}
+          width={300}
+          height={500}
+          fixedTopCount={1}
+          rowCount={months}
+          rowHeight={rowHeight}
+          columnCount={1}
+          columnWidth={100}
+          fillerColumn="stretch"
+          scrollSnap={props.scrollSnap}
+          onScroll={handleScroll}
+        >
+          {Cell}
+        </WindowGrid>
+      </div>
     </>
-  //   <WindowGrid
-  //   rowCount={100}
-  //   rowHeight=
-  //   {...props}
-  //   rowCount={rows.length}
-  //   fixedTopCount={fixedTopCount}
-  //   columnCount={columns.length}
-  //   columnWidth={columnWidth}
-  // >
-  //   {Cell}
-  // </WindowGrid>
-  )
-
+  );
 };
 
 export default WindowCalendar;
