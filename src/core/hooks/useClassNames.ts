@@ -17,8 +17,8 @@ export type ClassNamesProps = {
   SECTION_TOP?: string;
   SECTION_LEFT?: string;
   SECTION_RIGHT?: string;
-  SECTION_BOTTOM?: string;
-  SECTION_CENTER?: string;
+  MONTH_OVERLAY?: string;
+  MONTH_TITLE?: string;
 
   GUIDELINE?: string;
   MONTH?: string;
@@ -46,8 +46,8 @@ export type ClassNames = {
   SECTION_TOP: string;
   SECTION_LEFT: string;
   SECTION_RIGHT: string;
-  SECTION_BOTTOM: string;
-  SECTION_CENTER: string;
+  MONTH_OVERLAY: string;
+  MONTH_TITLE: string;
 
   GUIDELINE: string;
   MONTH: string;
@@ -69,6 +69,8 @@ export type ClassNames = {
 const CLASSNAMES = {
   WEEKDAYS: 'weekdays',
   CALENDAR: 'calendar',
+  MONTH_TITLE: 'month-title',
+  MONTH_OVERLAY: 'month-overlay',
   MONTH: 'month',
   WEEK: 'week',
   DAY: 'day',
@@ -90,8 +92,6 @@ const CLASSNAMES = {
   SECTION_TOP: 'section-top',
   SECTION_LEFT: 'section-left',
   SECTION_RIGHT: 'section-right',
-  SECTION_BOTTOM: 'section-bottom',
-  SECTION_CENTER: 'section-center',
 
   GUIDELINE: 'guideline',
 

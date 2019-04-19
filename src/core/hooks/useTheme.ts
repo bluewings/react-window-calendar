@@ -4,18 +4,21 @@ import { ClassNames } from './useClassNames';
 
 export type ThemeFunction = (classNames: ClassNames) => StringAnyMap;
 
-function defaultTheme(_: ClassNames, { weekdaysHeight }) {
+function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight }) {
   return css({
     position: 'relative',
     boxSizing: 'border-box',
     fontSize: 13,
+    '*': {
+      boxSizing: 'border-box',
+    },
     [_.WEEKDAYS]: {
       display: 'flex',
       flexWrap: 'wrap',
       margin: 0,
       padding: 0,
       height: weekdaysHeight,
-      boxSizing: 'border-box',
+
       borderBottom: '1px solid silver',
       '>li': {
         display: 'flex',
@@ -28,8 +31,50 @@ function defaultTheme(_: ClassNames, { weekdaysHeight }) {
         height: weekdaysHeight,
       },
     },
+    [_.MONTH_TITLE]: {
+      // background: 'yellow',
+      display: 'flex',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      height: weekHeight,
+      pointerEvents: 'none',
+    },
+    [_.MONTH_OVERLAY]: {
+      display: 'flex',
+      // background: 'yellow',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      position: 'absolute',
+      width: '100%',
+      textAlign: 'center',
+      top: weekdaysHeight,
+      height: weekHeight * 2,
+      // MONTH_OVERLAY
+      transition: 'opacity 0.5s linear',
+      pointerEvents: 'none',
+
+      // zIndex: 1000
+      // border: '5px solid red',
+    },
     [_.MONTH]: {
-      border: '5px solid red',
+      // border: '5px solid red',
+    },
+    [_.WEEK]: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      margin: 0,
+      padding: 0,
+      height: weekHeight,
+      // height: weekdaysHeight,
+    },
+    [_.DAY]: {
+      display: 'flex',
+      flexBasis: 0,
+      flexGrow: 1,
+      justifyContent: 'center',
+      flexDirection: 'column',
+      listStyle: 'none',
+      textAlign: 'center',
     },
     // [_.WEEKDAYS]: {
     //   boxSizing: 'border-box',

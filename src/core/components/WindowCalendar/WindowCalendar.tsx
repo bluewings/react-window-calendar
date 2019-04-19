@@ -16,6 +16,8 @@ import {
 import { format } from 'date-fns';
 import { css } from 'emotion';
 
+import styles from './WindowCalendar.module.scss';
+
 type ScrollEvent = SyntheticEvent<HTMLDivElement>;
 
 type WindowCalendarProps222 = {
@@ -145,7 +147,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   }, [props.maxDate]);
 
   const weekdaysHeight = props.weekdaysHeight || 30;
-  const weekHeight = props.weekHeight || 60;
+  const weekHeight = props.weekHeight || 30;
 
   const classNames = useClassNames(props.classNames);
 
@@ -244,7 +246,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   if (rowIdx >= 0) {
     const { year, month } = allMonths[rowIdx];
-    aaa = format(new Date(year, month), 'YYYY년 M월');
+    aaa = formatMonthYear(new Date(year, month));
   }
 
   const inputEl = useRef(null);
@@ -262,7 +264,8 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
       <p onClick={handleClick}>
         {velo} {isScrolling ? 'scrolling' : 'no-scrolling'} - {aaa}
       </p>
-      <div className={theme}>
+
+      <div className={styles.root + ' ' + theme}>
         <div className={rootStyle}>
           <WindowGrid
             ref={inputEl}
@@ -279,6 +282,13 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
           >
             {Cell}
           </WindowGrid>
+        </div>
+        <div
+          className={classNames.MONTH_OVERLAY + ' ' + styles.overlayGradient}
+          style={{ opacity: velo > 500 ? 1 : 0 }}
+        >
+          <div>{aaa}</div>
+          <div>&nbsp;</div>
         </div>
       </div>
     </>

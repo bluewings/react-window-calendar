@@ -4,52 +4,50 @@ import { format } from 'date-fns';
 
 const Calendar = (_month, { classNames, formatDay, formatMonthYear }) => {
   const { year, month, startDay, daysInMonth } = _month;
-  const mid = new Date(year, month, 15);
+  // const mid = new Date(year, month, 15);
   // const start = startOfMonth(mid);
   // const end = endOfMonth(mid);
   // const startDay = getDay(start);
   // const daysInMonth = getDaysInMonth(mid);
 
-  const lists = [];
+  const weeks = [];
 
-  let rows = [];
-
-  const rowscount = Math.ceil((startDay + daysInMonth) / 7);
+  let days = [];
 
   // console.log(daysInMonth)
   for (let i = 0; i < startDay; i = i + 1) {
-    rows.push({
+    days.push({
       day: '',
     });
   }
 
   for (let i = 1; i <= daysInMonth; i = i + 1) {
-    rows.push({
+    days.push({
       day: i,
     });
-    if ((startDay + i) % 7 === 0 && rows.length > 0) {
-      lists.push(rows);
-      rows = [];
+    if ((startDay + i) % 7 === 0 && days.length > 0) {
+      weeks.push(days);
+      days = [];
     }
   }
 
-  if (rows.length > 0) {
-    lists.push(rows);
-    rows = [];
+  if (days.length > 0) {
+    weeks.push([...days, ...[...Array(7 - days.length)].map((e) => ({ day: '' }))]);
+    days = [];
   }
 
   // console.lo
 
   const hdrStyle = {
     position: _month.headerSpaceRequired ? 'relative' : 'absolute',
-    display: 'flex',
-    height: 40,
-    fontSize: 14,
-    fontWeight: 700,
-    paddingLeft: 12,
-    alignItems: 'center',
+    // display: 'flex',
+    // height: 40,
+    // fontSize: 14,
+    // fontWeight: 700,
+    // paddingLeft: 12,
+    // alignItems: 'center',
     // background: '#ddd',
-    boxSizing: 'border-box',
+    // boxSizing: 'border-box',
   };
   // const yyyymm = format(new Date(year,month), 'MMM YYYY')
   // const yyyymm = format(new Date(year, month), 'YYYY년 M월');
@@ -58,8 +56,18 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear }) => {
   return (
     <>
       <div className={classNames.MONTH}>
-        <div style={hdrStyle}>{yyyymm}</div>
-        <table width="100%" border="0" cellPadding={0} cellSpacing={0}>
+        <div className={classNames.MONTH_TITLE} style={hdrStyle}>
+          {yyyymm}
+        </div>
+
+        {weeks.map((days, i) => (
+          <ul className={classNames.WEEK}>
+            {days.map((e) => (
+              <li className={classNames.DAY}> {e.day} </li>
+            ))}
+          </ul>
+        ))}
+        {/* <table width="100%" border="0" cellPadding={0} cellSpacing={0}>
           {lists.map((e, i) => {
             return (
               <tr>
@@ -69,7 +77,7 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear }) => {
               </tr>
             );
           })}
-        </table>
+        </table> */}
       </div>
     </>
   );
