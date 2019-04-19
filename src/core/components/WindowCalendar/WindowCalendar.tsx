@@ -159,7 +159,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   const weekdaysHeight = props.weekdaysHeight || 30;
   const weekHeight = props.weekHeight || 30;
 
-  const numOfCalendars = props.numOfCalendars || 3;
+  const numOfCalendars = props.numOfCalendars || 4;
   const gutter = props.gutter || 20;
 
   const direction = props.direction || Direction.VERTICAL;
