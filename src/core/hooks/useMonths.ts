@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { differenceInMonths, getYear, getMonth, addMonths, startOfMonth, getDay, getDaysInMonth } from 'date-fns';
 
-function useMonths(minDate: Date, maxDate: Date) {
+function useMonths(min: Date, max: Date) {
   return useMemo(() => {
-    const numOfMonths = differenceInMonths(maxDate, minDate) + 1;
-    const baseMonth = new Date(getYear(minDate), getMonth(minDate), 15);
+    const numOfMonths = differenceInMonths(max, min) + 1;
+    const baseMonth = new Date(getYear(min), getMonth(min), 15);
     const months = [...Array(numOfMonths)].map((e, i) => {
       const currMonth = addMonths(baseMonth, i);
       const year = getYear(currMonth);
@@ -24,7 +24,7 @@ function useMonths(minDate: Date, maxDate: Date) {
       };
     });
     return months;
-  }, [minDate, maxDate]);
+  }, [min, max]);
 }
 
 export default useMonths;

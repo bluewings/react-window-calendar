@@ -25,6 +25,8 @@ enum Direction {
   HORIZONTAL = 'horizontal',
 }
 
+type DateInput = Date | string | undefined;
+
 type WindowCalendarProps222 = {
   scrollTop?: number;
   scrollLeft?: number;
@@ -84,8 +86,11 @@ type WindowCalendarProps = {
   containerStyle?: any;
   guideline?: boolean;
 
-  minDate?: string;
-  maxDate?: string;
+  min?: DateInput;
+  minDate?: DateInput;
+  max?: DateInput;
+
+  maxDate?: DateInput;
 
   scrollSnap?: boolean;
 
@@ -145,16 +150,42 @@ const rootStyle = css({
   },
 });
 
+const DEFAULT_MIN_DATE = new Date(2000, 0);
+const DEFAULT_MAX_DATE = new Date(2050, 11);
+
+function aaa(date: DateInput, defaultValue: DateInput) {
+  if (date && date.constructor === Date) {
+    return date;
+  } else if (typeof date === 'string') {
+    return new Date(date);
+  }
+  return defaultValue;
+}
+
+function useAAA(min: DateInput, minDate: DateInput, max: DateInput, maxDate: DateInput) {
+  const _min = useMemo(() => {
+    return aaa(min, DEFAULT_MIN_DATE);
+  }, [min && min.toString()]);
+
+  const _max = useMemo(() => {
+    return aaa(max, DEFAULT_MAX_DATE);
+  }, [max]);
+
+  return [_min, _min, _max, _max];
+}
+
 const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
-  // let { minDate, maxDate } = props;
+  // let { min, max } = props;
 
-  const minDate = useMemo(() => {
-    return props.minDate || new Date(2019, 0);
-  }, [props.minDate]);
+  const [min, minDate, max, maxDate] = useAAA(props.min, props.minDate, props.max, props.maxDate);
 
-  const maxDate = useMemo(() => {
-    return props.maxDate || new Date(2020, 11);
-  }, [props.maxDate]);
+  // const min = useMemo(() => {
+  //   return props.min || new Date(2000, 0);
+  // }, [props.min]);
+
+  // const max = useMemo(() => {
+  //   return props.max || new Date(2050, 11);
+  // }, [props.max]);
 
   const weekdaysHeight = props.weekdaysHeight || 30;
   const weekHeight = props.weekHeight || 30;
@@ -186,7 +217,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     strings,
   );
 
-  const allMonths = useMonths(minDate, maxDate);
+  const allMonths = useMonths(min, max);
 
   const weekdays = useWeekdays(classNames, strings);
 
@@ -301,7 +332,8 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     rowHeight: rowHeight,
     columnCount: 1,
     columnWidth: 100,
-    height: 300,
+    width: 280,
+    height: 400,
     fillerColumn: 'stretch',
   };
 
@@ -341,6 +373,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
               onScroll={handleScroll}
               onResize={handleResize}
               {...windowGridProps}
+              guideline={true}
             >
               {Cell}
             </WindowGrid>

@@ -1,0 +1,27 @@
+
+
+import { Playground } from 'docz';
+import { WindowCalendar } from '../src/core';
+
+
+# Basic usage
+
+## Without props
+
+<Playground>
+<WindowCalendar/>
+</Playground>
+
+## Min date / Max date
+
+<Playground>
+<WindowCalendar
+  min={new Date(2019, 0)} // Minimum month to render
+  minDate={new Date(2019, 0, 10)} // Minimum selectable date
+  max={new Date(2019, 11)} // Maximum month to render
+  maxDate={new Date(2019, 10, 15)} // Minimum selectable date
+/>
+</Playground>
+
+
+

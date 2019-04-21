@@ -6,10 +6,12 @@ export type ThemeFunction = (classNames: ClassNames) => StringAnyMap;
 
 function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight, clientWidth, gutter, direction }) {
   const paddingH = (direction === 'horizontal' ? gutter : 0) / 2;
+
+  const titlePadH = ~~((clientWidth / 7 - 16) / 2) || 0;
   return css({
     position: 'relative',
     boxSizing: 'border-box',
-    fontSize: 13,
+    fontSize: 14,
     '*': {
       boxSizing: 'border-box',
     },
@@ -53,6 +55,11 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight, clientWidth, 
       flexDirection: 'column',
       height: weekHeight,
       pointerEvents: 'none',
+      fontWeight: 700,
+      fontSize: 14,
+      opacity: clientWidth ? 1 : 0,
+      paddingLeft: titlePadH,
+      paddingRight: titlePadH,
     },
     [_.MONTH_OVERLAY]: {
       display: 'flex',
