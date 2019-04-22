@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { WindowGrid } from 'react-window-grid';
-import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
+import { FunctionComponent, useMemo, useEffect, SyntheticEvent, useState, useRef } from 'react';
 import {
   // useColumns,
   // useEventHandlers,
@@ -8,13 +8,14 @@ import {
   useDates,
   useClassNames,
   useCalendar,
+  useEventHandlers,
   useFormats,
   useMonths,
   useStrings,
   useWeekdays,
   useTheme,
 } from '../../hooks';
-import { format } from 'date-fns';
+import { format, addDays } from 'date-fns';
 import { css } from 'emotion';
 import { DateInput } from '../../hooks/useDates';
 
@@ -27,6 +28,12 @@ enum Direction {
   HORIZONTAL = 'horizontal',
 }
 
+enum DateRangeType {
+  DAY = 'day',
+  RANGE = 'range',
+  WEEK = 'week',
+  MONTH = 'month',
+}
 // type WindowCalendarProps222 = {
 //   scrollTop?: number;
 //   scrollLeft?: number;
@@ -94,7 +101,7 @@ type WindowCalendarProps = {
 
   scrollSnap?: boolean;
 
-  dateRangeType: string;
+  dateRangeType?: DateRangeType;
 
   direction: Direction;
 
@@ -199,6 +206,12 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   const weekdays = useWeekdays(classNames, strings);
 
+  // console.log(windowGridProps);
+  // let tmpD = new Date()
+  // tmpD = addDays(tmpD, 3);
+
+  const [selected, setSelected] = useState([]);
+
   const calendar = useCalendar({
     classNames,
     formatDay,
@@ -208,6 +221,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     minDate,
     maxDate,
     today,
+    selected,
   });
 
   // console.log('> strings', strings);
@@ -350,7 +364,49 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     direction === Direction.HORIZONTAL ? classNames.HORIZONTAL : classNames.VERTICAL,
   ].join(' ');
 
-  console.log(windowGridProps);
+  const updateSelected = useRef();
+  updateSelected.current = (date) => {
+    const next = [date];
+    setSelected(next);
+    return next;
+  };
+
+  // useEffect(() => {
+
+  //   // if (selected) {
+  //   props.onSelectDate && props.onSelectDate(selected)
+  //   // }
+
+  // }, [selected]);
+
+  // React.useEffect(())
+
+  const ownEvents = useMemo(() => {
+    return {
+      click: {
+        [`.${classNames.DAY}`]: (event, ui) => {
+          // console.log()
+
+          if (ui && ui.date) {
+            // props.onSelectDate()
+            // props.onSelectDate(ui.date);
+            const next = updateSelected.current(ui.date);
+            if (props.onSelectDate) {
+              props.onSelectDate(next);
+            }
+          }
+          // console.log(event, ui);
+        },
+      },
+    };
+  }, []);
+
+  const eventHandlers = useEventHandlers(
+    {
+      ...ownEvents,
+    },
+    [],
+  );
 
   return (
     <>
@@ -358,8 +414,9 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
         {velo} {isScrolling ? 'scrolling' : 'no-scrolling'} - {aaa}
       </p> */}
       <div className={theme}>
+        {/* <pre>{JSON.stringify(selected, null, 2)}</pre> */}
         <div className={rootClassName}>
-          <div className={rootStyle}>
+          <div className={rootStyle} {...eventHandlers}>
             <WindowGrid
               ref={inputEl}
               // width={700}

@@ -13,6 +13,8 @@ function useEventHandlers(events, rows) {
   };
   const eventsHash = serialize(events);
 
+  console.log(events);
+
   const eventHandlers = useMemo(() => {
     const entries = (target) => {
       return Object.keys(target).map((k) => {
@@ -38,21 +40,40 @@ function useEventHandlers(events, rows) {
       const target = source.matches(selector) ? source : source.closest(selector);
 
       if (target) {
-        let rowIndex = getAttrFromClosest(target, 'data-row-index');
-        let columnIndex = getAttrFromClosest(target, 'data-column-index');
+        let year = ~~getAttrFromClosest(target, 'data-year');
+        let month = ~~getAttrFromClosest(target, 'data-month');
+        let day = ~~getAttrFromClosest(target, 'data-day');
 
-        if (rowIndex && columnIndex) {
-          rowIndex = ~~rowIndex;
-          columnIndex = ~~columnIndex;
-          const row = rows[rowIndex].org;
+        if (day) {
+          const date = new Date(year, month, day);
+
+          console.log(date);
+
           return {
             target,
-            rowIndex,
-            columnIndex,
-            data: row,
-            // data: rows[row]
+            date,
           };
         }
+
+        return { target };
+
+        // // console.log(year, month, day);
+
+        // let rowIndex = getAttrFromClosest(target, 'data-row-index');
+        // let columnIndex = getAttrFromClosest(target, 'data-column-index');
+
+        // if (rowIndex && columnIndex) {
+        //   rowIndex = ~~rowIndex;
+        //   columnIndex = ~~columnIndex;
+        //   const row = rows[rowIndex].org;
+        //   return {
+        //     target,
+        //     rowIndex,
+        //     columnIndex,
+        //     data: row,
+        //     // data: rows[row]
+        //   };
+        // }
       }
       // if (target) {
       //   return target;
