@@ -66,12 +66,12 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear, direction, w
   // const yyyymm = format(new Date(year,month), 'MMM YYYY')
   // const yyyymm = format(new Date(year, month), 'YYYY년 M월');
 
-  const yyyymm = formatMonthYear({ year, month });
+  // const yyyymm = ;
   return (
     <>
       <div className={classNames.MONTH}>
         <div className={classNames.MONTH_TITLE} style={hdrStyle}>
-          {yyyymm}
+          {formatMonthYear({ year, month })}
         </div>
 
         {direction === 'horizontal' && weekdays}
@@ -85,7 +85,7 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear, direction, w
                 .filter(identity)
                 .join(' ');
 
-              return <li className={dayClassName}> {e.day} </li>;
+              return <li className={dayClassName}> {formatDay({day:e.day})} </li>;
             })}
           </ul>
         ))}

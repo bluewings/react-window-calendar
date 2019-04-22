@@ -123,6 +123,8 @@ type WindowCalendarProps = {
   formatMonthDayYear?: Function;
   formatMonthYear?: Function;
   formatYear?: Function;
+
+  onSelectDate?: Function;
 };
 
 const rootStyle = css({
@@ -314,7 +316,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     rowHeight: rowHeight,
     columnCount: 1,
     columnWidth: 100,
-    width: 280,
+    // width: 280,
     height: 400,
     fillerColumn: 'stretch',
   };
