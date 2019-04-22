@@ -403,6 +403,8 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     return {
       mouseover: {
         [`.${classNames.DAY}`]: (event, ui) => {
+          return;
+
           console.log('mouseover', ui.date);
           console.log(hoverRef.current);
           if (
@@ -417,7 +419,10 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
         },
       },
       mouseout: {
-        [`.${classNames.DAY}`]: (event, ui) => {
+        // [`.${classNames.DAY}`]: (event, ui) => {
+        '*': (event, ui) => {
+          return;
+
           console.log('mouseout', ui.date);
           if (hoverRef.current) {
             setHover(null);

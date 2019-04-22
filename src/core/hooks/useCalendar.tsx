@@ -88,7 +88,7 @@ const Calendar = (
         <ul className={classNames.WEEK}>
           {days.map(({ day, dateIndex, className }) => (
             <li className={className} data-day={day}>
-              {formatDay({ year, month, day, dateIndex })}
+              <div>{formatDay({ year, month, day, dateIndex })}</div>
             </li>
           ))}
         </ul>

@@ -108,7 +108,33 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight, clientWidth, 
       justifyContent: 'center',
       flexDirection: 'column',
       listStyle: 'none',
-      textAlign: 'center',
+      // textAlign: 'center',
+      '>div': {
+        // position: 'relative',
+        display: 'flex',
+        alignSelf: 'center',
+        // textAlign: 'center',
+        justifyContent: 'center',
+        width: weekHeight - 8,
+        height: weekHeight - 8,
+        borderRadius: '50%',
+        background: 'yellow',
+        '&::after': {
+          content: '""',
+          // background: 'yellow',
+        },
+      },
+
+      //     // content: '123',
+      //      background: 'yellow',
+      //      height: weekHeight - 4,
+      //     //  '::after': {
+      //       content: '123',
+      //       display: 'block'
+      //     //  }
+
+      //   }
+      // }
     },
     [_.DAY_DISABLED]: {
       background: '#eee',
@@ -117,15 +143,21 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight, clientWidth, 
       background: 'lightyellow',
     },
     [_.DAY_SELECTED]: {
-      background: 'lime',
+      '>div': {
+        background: 'lime',
+      },
     },
     [_.DAY_SELECTED_START]: {
-      background: 'red',
-      color: '#fff',
+      '>div': {
+        background: 'red',
+        color: '#fff',
+      },
     },
     [_.DAY_SELECTED_END]: {
-      background: 'blue',
-      color: '#fff',
+      '>div': {
+        background: 'blue',
+        color: '#fff',
+      },
     },
     [_.WEEKDAY_SUN]: { color: 'red' },
     // [_.WEEKDAY_MON]: { color: 'orange' },
