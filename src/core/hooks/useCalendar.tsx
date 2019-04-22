@@ -19,6 +19,8 @@ const Calendar = (
     isDisabled: _isDisabled,
     isSelected: _isSelected,
     isToday: _isToday,
+    isSelectedStart: _isSelectedStart,
+    isSelectedEnd: _isSelectedEnd,
   },
 ) => {
   const { year, month, startDay, daysInMonth, firstDateIndex } = _month;
@@ -46,12 +48,16 @@ const Calendar = (
     const weekday = i % NUM_OF_DAYS_IN_WEEK;
     const isDisabled = _isDisabled(day);
     const isSelected = _isSelected(day);
+    const isSelectedStart = isSelected && _isSelectedStart(day);
+    const isSelectedEnd = isSelected && _isSelectedEnd(day);
     const isToday = _isToday(day);
     const className = [
       classNames.DAY,
       isDisabled && classNames.DAY_DISABLED,
       isToday && classNames.DAY_TODAY,
       isSelected && classNames.DAY_SELECTED,
+      isSelectedStart && classNames.DAY_SELECTED_START,
+      isSelectedEnd && classNames.DAY_SELECTED_END,
       weekdayClassNames[weekday],
     ]
       .filter(identity)
@@ -62,6 +68,8 @@ const Calendar = (
       className,
       isDisabled,
       isSelected,
+      isSelectedStart,
+      isSelectedEnd,
       isToday,
     };
   });
@@ -126,27 +134,82 @@ function useCalendar({
     return todayIndex === dateIndex;
   };
 
-  const selectedIndices = selected.map((e: any) => getDateIndex(e));
+  const { indices, ranges } = selected.reduce(
+    (accum, e) => {
+      if (Array.isArray(e)) {
+        if (e.length === 2) {
+          return {
+            ...accum,
+            ranges: [...accum.ranges, [getDateIndex(e[0]), getDateIndex(e[1])].sort()],
+          };
+        }
+        return accum;
+      }
+      return {
+        ...accum,
+        indices: [...accum.indices, getDateIndex(e)],
+      };
+
+      // return accum;
+    },
+    {
+      indices: [],
+      ranges: [],
+    },
+  );
+
+  console.log(indices);
+  console.log(ranges);
 
   // console.log(_selected);
   let isSelected = (e: any) => false;
-  if (selectedIndices && selectedIndices.length > 0) {
+  let isSelectedStart = (e: any) => false;
+  let isSelectedEnd = (e: any) => false;
+  if (indices && indices.length > 0) {
     isSelected = ({ dateIndex }) => {
-      return selectedIndices.find((e) => {
+      return indices.find((e) => {
         return dateIndex === e;
+      });
+    };
+  } else if (ranges && ranges.length > 0) {
+    isSelected = ({ dateIndex }) => {
+      return ranges.find(([e1, e2]) => {
+        return e1 <= dateIndex && dateIndex <= e2;
+      });
+    };
+
+    isSelectedStart = ({ dateIndex }) => {
+      return ranges.find(([e1]) => {
+        return e1 === dateIndex;
+      });
+    };
+    isSelectedEnd = ({ dateIndex }) => {
+      return ranges.find(([e1, e2]) => {
+        return e2 === dateIndex;
       });
     };
   }
 
   return useMemo(() => {
-    const opt = { classNames, formatDay, formatMonthYear, direction, weekdays, isDisabled, isToday, isSelected };
+    const opt = {
+      classNames,
+      formatDay,
+      formatMonthYear,
+      direction,
+      weekdays,
+      isDisabled,
+      isToday,
+      isSelected,
+      isSelectedStart,
+      isSelectedEnd,
+    };
 
     return (month) => {
       // console.log(month);
 
       return Calendar(month, opt);
     };
-  }, [classNames, formatDay, formatMonthYear, direction, weekdays, isSelected]);
+  }, [classNames, formatDay, formatMonthYear, direction, weekdays, isSelected, isSelectedStart, isSelectedEnd]);
 }
 
 export default useCalendar;

@@ -79,6 +79,8 @@ const CLASSNAMES = {
   DAY_DISABLED: 'day-disabled',
   DAY_TODAY: 'day-today',
   DAY_SELECTED: 'day-selected',
+  DAY_SELECTED_START: 'day-selected-start',
+  DAY_SELECTED_END: 'day-selected-end',
   WEEKDAY_SUN: 'weekday-sun',
   WEEKDAY_MON: 'weekday-mon',
   WEEKDAY_TUE: 'weekday-tue',

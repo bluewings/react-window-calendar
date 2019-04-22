@@ -366,7 +366,20 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   const updateSelected = useRef();
   updateSelected.current = (date) => {
-    const next = [date];
+    // let next = [date];
+    let next;
+
+    if (props.dateRangeType === DateRangeType.RANGE) {
+      let prev = selected[0] || [];
+      if (prev && prev.length < 2) {
+        next = [[...prev, date].sort().reverse()];
+      } else {
+        next = [[date]];
+      }
+    } else {
+      next = [date];
+    }
+
     setSelected(next);
     return next;
   };
@@ -381,8 +394,37 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   // React.useEffect(())
 
+  const [hover, setHover] = useState(null);
+
+  const hoverRef = useRef();
+  hoverRef.current = hover;
+
   const ownEvents = useMemo(() => {
     return {
+      mouseover: {
+        [`.${classNames.DAY}`]: (event, ui) => {
+          console.log('mouseover', ui.date);
+          console.log(hoverRef.current);
+          if (
+            ui.date &&
+            hoverRef.current &&
+            typeof hoverRef.current.toString === 'function' &&
+            hoverRef.current.toString() === ui.date.toString()
+          ) {
+            return;
+          }
+          setHover(ui.date);
+        },
+      },
+      mouseout: {
+        [`.${classNames.DAY}`]: (event, ui) => {
+          console.log('mouseout', ui.date);
+          if (hoverRef.current) {
+            setHover(null);
+          }
+          // setHove
+        },
+      },
       click: {
         [`.${classNames.DAY}`]: (event, ui) => {
           // console.log()
@@ -413,8 +455,8 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
       {/* <p onClick={handleClick}>
         {velo} {isScrolling ? 'scrolling' : 'no-scrolling'} - {aaa}
       </p> */}
+      <pre>{JSON.stringify(hover)}&nbsp;</pre>
       <div className={theme}>
-        {/* <pre>{JSON.stringify(selected, null, 2)}</pre> */}
         <div className={rootClassName}>
           <div className={rootStyle} {...eventHandlers}>
             <WindowGrid
@@ -438,6 +480,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
             <div />
           </div>
         </div>
+        <pre>{JSON.stringify(selected, null, 2)}</pre>
       </div>
     </>
   );
