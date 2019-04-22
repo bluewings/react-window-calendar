@@ -1,32 +1,53 @@
 import { useMemo } from 'react';
 import { format } from 'date-fns';
 
+interface IFormatDay {
+  ({ year, month, day }: { year: number; month: number; day: number }, strings?: any): string;
+}
+
+interface IFormatMonthDayYear {
+  ({ year, month, day }: { year: number; month: number; day: number }, strings?: any): string;
+}
+
+interface IFormatMonthYear {
+  ({ year, month }: { year: number; month: number }, strings?: any): string;
+}
+
+interface IFormatYear {
+  ({ year }: { year: number }, strings?: any): string;
+}
+
+const formatDay: IFormatDay = ({ year, month, day }, strings) => `${day}`;
+const formatMonthDayYear: IFormatMonthDayYear = ({ year, month, day }, strings) => `${day}`;
+const formatMonthYear: IFormatMonthYear = ({ year, month }, strings) => `${strings.shortMonths[month]} ${year}`;
+const formatYear: IFormatYear = ({ year }, strings) => `${year}`;
+
 const defaultFormats = {
-  formatDay: (date: Date, strings: any) => date,
-  formatMonthDayYear: (date: Date, strings: any) => date,
-  formatMonthYear: (date: Date, strings: any) => `${strings.shortMonths[date.getMonth()]} ${date.getFullYear()}`,
-  formatYear: (date: Date, strings: any) => date.getFullYear(),
+  formatDay,
+  formatMonthDayYear,
+  formatMonthYear,
+  formatYear,
 };
 
-function useFormat(customFormat: Function | string, defaultFormat: Function, strings: any) {
+function useFormat(customFormat: Function | string, defaultFormat: Function, strings: any): any {
   return useMemo(() => {
     let formatFunc = defaultFormat;
     if (typeof customFormat === 'function') {
       formatFunc = customFormat;
     } else if (typeof customFormat === 'string' && customFormat.trim()) {
-      formatFunc = (date: Date) => format(date, customFormat);
+      formatFunc = (data: any) => format(data, customFormat);
     }
-    return (date: Date) => formatFunc(date, strings);
+    return (data: any) => formatFunc(data, strings);
   }, [customFormat, defaultFormat, strings]);
 }
 
 function useFormats(
-  formatDay: Function | string,
-  formatMonthDayYear: Function | string,
-  formatMonthYear: Function | string,
-  formatYear: Function | string,
+  formatDay: IFormatDay | string,
+  formatMonthDayYear: IFormatMonthDayYear | string,
+  formatMonthYear: IFormatMonthYear | string,
+  formatYear: IFormatYear | string,
   strings: any,
-) {
+): [IFormatDay, IFormatMonthDayYear, IFormatMonthYear, IFormatYear] {
   return [
     useFormat(formatDay, defaultFormats.formatDay, strings),
     useFormat(formatMonthDayYear, defaultFormats.formatMonthDayYear, strings),

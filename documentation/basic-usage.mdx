@@ -23,5 +23,20 @@ import { WindowCalendar } from '../src/core';
 />
 </Playground>
 
+## Disabled dates
 
+<Playground>
+<WindowCalendar
+  disabledDates={[
+    new Date(2019, 4, 10),
+    new Date(2019, 4, 13),
+    new Date(2019, 4, 17),
+  ]}
+/>
+</Playground>
 
+## Disabled weekdays
+
+<Playground>
+<WindowCalendar disabledDays={[0, 6]} />
+</Playground>

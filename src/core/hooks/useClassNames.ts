@@ -76,6 +76,14 @@ const CLASSNAMES = {
   DAY: 'day',
   HORIZONTAL: 'horizontal',
   VERTICAL: 'vertical',
+  DAY_DISABLED: 'day-disabled',
+  WEEKDAY_SUN: 'weekday-sun',
+  WEEKDAY_MON: 'weekday-mon',
+  WEEKDAY_TUE: 'weekday-tue',
+  WEEKDAY_WED: 'weekday-wed',
+  WEEKDAY_THU: 'weekday-thu',
+  WEEKDAY_FRI: 'weekday-fri',
+  WEEKDAY_SAT: 'weekday-sat',
 
   // WEEKDAYS: 'cell',
 

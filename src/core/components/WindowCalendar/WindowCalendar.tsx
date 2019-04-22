@@ -2,9 +2,10 @@ import * as React from 'react';
 import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import {
-  useColumns,
-  useEventHandlers,
-  useRows,
+  // useColumns,
+  // useEventHandlers,
+  // useRows,
+  useDates,
   useClassNames,
   useCalendar,
   useFormats,
@@ -15,6 +16,7 @@ import {
 } from '../../hooks';
 import { format } from 'date-fns';
 import { css } from 'emotion';
+import { DateInput } from '../../hooks/useDates';
 
 import styles from './WindowCalendar.module.scss';
 
@@ -25,37 +27,35 @@ enum Direction {
   HORIZONTAL = 'horizontal',
 }
 
-type DateInput = Date | string | undefined;
+// type WindowCalendarProps222 = {
+//   scrollTop?: number;
+//   scrollLeft?: number;
+//   width?: number;
+//   height?: number;
 
-type WindowCalendarProps222 = {
-  scrollTop?: number;
-  scrollLeft?: number;
-  width?: number;
-  height?: number;
+//   columns?: any;
+//   columnCount: number;
+//   columnWidth: number | Function;
 
-  columns?: any;
-  columnCount: number;
-  columnWidth: number | Function;
+//   rows?: any;
+//   rowCount: number;
+//   rowHeight: number | Function;
 
-  rows?: any;
-  rowCount: number;
-  rowHeight: number | Function;
+//   fixedTopCount?: number;
+//   fixedLeftCount?: number;
+//   fixedRightCount?: number;
+//   fixedBottomCount?: number;
+//   overscanCount?: number;
 
-  fixedTopCount?: number;
-  fixedLeftCount?: number;
-  fixedRightCount?: number;
-  fixedBottomCount?: number;
-  overscanCount?: number;
+//   fillerColumn?: 'none' | 'append' | 'stretch' | 'shrink';
+//   fillerRow?: 'none' | 'append' | 'stretch' | 'shrink';
+//   /** 스크롤되는 뷰포트 너비가 특정값 이하로 떨어지면 fixedColumn 이 무효화된다. */
+//   minVisibleScrollViewWidth: number;
+//   minVisibleScrollViewHeight: number;
 
-  fillerColumn?: 'none' | 'append' | 'stretch' | 'shrink';
-  fillerRow?: 'none' | 'append' | 'stretch' | 'shrink';
-  /** 스크롤되는 뷰포트 너비가 특정값 이하로 떨어지면 fixedColumn 이 무효화된다. */
-  minVisibleScrollViewWidth: number;
-  minVisibleScrollViewHeight: number;
-
-  containerStyle?: any;
-  guideline?: boolean;
-};
+//   containerStyle?: any;
+//   guideline?: boolean;
+// };
 
 type WindowCalendarProps = {
   scrollTop?: number;
@@ -150,34 +150,8 @@ const rootStyle = css({
   },
 });
 
-const DEFAULT_MIN_DATE = new Date(2000, 0);
-const DEFAULT_MAX_DATE = new Date(2050, 11);
-
-function aaa(date: DateInput, defaultValue: DateInput) {
-  if (date && date.constructor === Date) {
-    return date;
-  } else if (typeof date === 'string') {
-    return new Date(date);
-  }
-  return defaultValue;
-}
-
-function useAAA(min: DateInput, minDate: DateInput, max: DateInput, maxDate: DateInput) {
-  const _min = useMemo(() => {
-    return aaa(min, DEFAULT_MIN_DATE);
-  }, [min && min.toString()]);
-
-  const _max = useMemo(() => {
-    return aaa(max, DEFAULT_MAX_DATE);
-  }, [max]);
-
-  return [_min, _min, _max, _max];
-}
-
 const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
-  // let { min, max } = props;
-
-  const [min, minDate, max, maxDate] = useAAA(props.min, props.minDate, props.max, props.maxDate);
+  const [min, minDate, max, maxDate] = useDates(props.min, props.minDate, props.max, props.maxDate);
 
   // const min = useMemo(() => {
   //   return props.min || new Date(2000, 0);
@@ -221,7 +195,15 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   const weekdays = useWeekdays(classNames, strings);
 
-  const calendar = useCalendar(classNames, formatDay, formatMonthYear, direction, weekdays);
+  const calendar = useCalendar({
+    classNames,
+    formatDay,
+    formatMonthYear,
+    direction,
+    weekdays,
+    minDate,
+    maxDate,
+  });
 
   // console.log('> strings', strings);
 
@@ -313,7 +295,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   if (rowIdx >= 0) {
     const { year, month } = allMonths[rowIdx];
-    aaa = formatMonthYear(new Date(year, month));
+    aaa = formatMonthYear({ year, month });
   }
 
   const inputEl = useRef(null);
@@ -373,7 +355,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
               onScroll={handleScroll}
               onResize={handleResize}
               {...windowGridProps}
-              guideline={true}
+              guideline={false}
             >
               {Cell}
             </WindowGrid>

@@ -110,6 +110,17 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight, clientWidth, 
       listStyle: 'none',
       textAlign: 'center',
     },
+    [_.DAY_DISABLED]: {
+      background: '#eee',
+    },
+    [_.WEEKDAY_SUN]: { color: 'red' },
+    [_.WEEKDAY_MON]: { color: 'orange' },
+    [_.WEEKDAY_TUE]: { color: 'yellow' },
+    [_.WEEKDAY_WED]: { color: 'green' },
+    [_.WEEKDAY_THU]: { color: 'blue' },
+    [_.WEEKDAY_FRI]: { color: 'pulple' },
+    [_.WEEKDAY_SAT]: { color: 'black' },
+
     // [_.WEEKDAYS]: {
     //   boxSizing: 'border-box',
     //   overflow: 'hidden',
