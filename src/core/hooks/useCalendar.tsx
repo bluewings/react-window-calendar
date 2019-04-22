@@ -85,7 +85,7 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear, direction, w
                 .filter(identity)
                 .join(' ');
 
-              return <li className={dayClassName}> {formatDay({day:e.day})} </li>;
+              return <li className={dayClassName}> {formatDay({ day: e.day })} </li>;
             })}
           </ul>
         ))}

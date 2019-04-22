@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 export type DateInput = Date | string | undefined;
 
-const DEFAULT_MIN_DATE = new Date(2000, 0);
+const DEFAULT_MIN_DATE = new Date(1970, 0);
 const DEFAULT_MAX_DATE = new Date(2050, 11);
 
 function getDate(date: DateInput, defaultValue: Date): Date {

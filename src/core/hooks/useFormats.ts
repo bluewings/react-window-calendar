@@ -33,9 +33,17 @@ function useFormat(customFormat: Function | string, defaultFormat: Function, str
   return useMemo(() => {
     let formatFunc = defaultFormat;
     if (typeof customFormat === 'function') {
+      // formatFunc = ({ year, month, day }) => {
       formatFunc = customFormat;
+
+      // return customFormat(new Date(year, month))
+      // }
     } else if (typeof customFormat === 'string' && customFormat.trim()) {
-      formatFunc = (data: any) => format(data, customFormat);
+      formatFunc = (_: any) => {
+        const date = new Date(_.year, _.month || 0, typeof _.day === 'undefined' ? 1 : _.day);
+
+        return format(date, customFormat);
+      };
     }
     return (data: any) => formatFunc(data, strings);
   }, [customFormat, defaultFormat, strings]);

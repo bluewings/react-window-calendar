@@ -1,0 +1,17 @@
+
+
+import { Playground } from 'docz';
+import { WindowCalendar } from '../src/core';
+
+
+# Events
+
+## onSelectDate
+
+<Playground>
+<WindowCalendar
+  onSelectDate={function(date) {
+    alert('You selected: ' + format(date, 'ddd, MMM Do YYYY'))
+  }}
+/>
+</Playground>
