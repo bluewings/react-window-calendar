@@ -2,11 +2,17 @@ import { useMemo } from 'react';
 import { format } from 'date-fns';
 
 interface IFormatDay {
-  ({ year, month, day }: { year: number; month: number; day: number }, strings?: any): string;
+  (
+    { year, month, day, dayIndex }: { year: number; month: number; day: number; dayIndex: number },
+    strings?: any,
+  ): string;
 }
 
 interface IFormatMonthDayYear {
-  ({ year, month, day }: { year: number; month: number; day: number }, strings?: any): string;
+  (
+    { year, month, day, dayIndex }: { year: number; month: number; day: number; dayIndex: number },
+    strings?: any,
+  ): string;
 }
 
 interface IFormatMonthYear {
@@ -17,7 +23,8 @@ interface IFormatYear {
   ({ year }: { year: number }, strings?: any): string;
 }
 
-const formatDay: IFormatDay = ({ year, month, day }, strings) => `${day}`;
+const formatDay: IFormatDay = ({ year, month, day, dayIndex }, strings) => `${day}`;
+// const formatDay: IFormatDay = ({ year, month, day, dayIndex }, strings) => ` ${dayIndex ? dayIndex : ''}`;
 const formatMonthDayYear: IFormatMonthDayYear = ({ year, month, day }, strings) => `${day}`;
 const formatMonthYear: IFormatMonthYear = ({ year, month }, strings) => `${strings.shortMonths[month]} ${year}`;
 const formatYear: IFormatYear = ({ year }, strings) => `${year}`;
@@ -33,17 +40,10 @@ function useFormat(customFormat: Function | string, defaultFormat: Function, str
   return useMemo(() => {
     let formatFunc = defaultFormat;
     if (typeof customFormat === 'function') {
-      // formatFunc = ({ year, month, day }) => {
       formatFunc = customFormat;
-
-      // return customFormat(new Date(year, month))
-      // }
     } else if (typeof customFormat === 'string' && customFormat.trim()) {
-      formatFunc = (_: any) => {
-        const date = new Date(_.year, _.month || 0, typeof _.day === 'undefined' ? 1 : _.day);
-
-        return format(date, customFormat);
-      };
+      formatFunc = (_: any) =>
+        format(new Date(_.year, _.month || 0, typeof _.day === 'undefined' ? 1 : _.day), customFormat);
     }
     return (data: any) => formatFunc(data, strings);
   }, [customFormat, defaultFormat, strings]);

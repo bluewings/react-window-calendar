@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 const identity = (e) => e;
 
 const Calendar = (_month, { classNames, formatDay, formatMonthYear, direction, weekdays, isDisabled }) => {
-  const { year, month, startDay, daysInMonth } = _month;
+  const { year, month, startDay, daysInMonth, firstDayIndex } = _month;
   // const mid = new Date(year, month, 15);
   // const start = startOfMonth(mid);
   // const end = endOfMonth(mid);
@@ -30,6 +30,7 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear, direction, w
   for (let i = 0; i < startDay; i = i + 1) {
     days.push({
       day: '',
+      dayIndex: firstDayIndex - 0.5,
       weekday: days.length,
     });
   }
@@ -37,6 +38,7 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear, direction, w
   for (let i = 1; i <= daysInMonth; i = i + 1) {
     days.push({
       day: i,
+      dayIndex: firstDayIndex + i - 1,
       weekday: days.length,
     });
     if ((startDay + i) % 7 === 0 && days.length > 0) {
@@ -46,7 +48,14 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear, direction, w
   }
 
   if (days.length > 0) {
-    weeks.push([...days, ...[...Array(7 - days.length)].map((e) => ({ day: '' }))]);
+    weeks.push([
+      ...days,
+      ...[...Array(7 - days.length)].map((e) => ({
+        day: '',
+
+        dayIndex: firstDayIndex + daysInMonth - 0.5,
+      })),
+    ]);
     days = [];
   }
 
@@ -79,13 +88,15 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear, direction, w
         {weeks.map((days, i) => (
           <ul className={classNames.WEEK}>
             {days.map((e) => {
-              const disabled = isDisabled(new Date(year, month, e.day));
+              const { day, dayIndex, weekday } = e;
+              // const disabled = isDisabled(new Date(year, month, day ));
+              const disabled = isDisabled(e);
 
               const dayClassName = [classNames.DAY, disabled && classNames.DAY_DISABLED, weekdayClassNames[e.weekday]]
                 .filter(identity)
                 .join(' ');
 
-              return <li className={dayClassName}> {formatDay({ day: e.day })} </li>;
+              return <li className={dayClassName}> {formatDay({ year, month, day, dayIndex })} </li>;
             })}
           </ul>
         ))}
@@ -105,13 +116,27 @@ const Calendar = (_month, { classNames, formatDay, formatMonthYear, direction, w
   );
 };
 
+const getDayIndex = (() => {
+  const MILLISEC_PER_DAY = 1000 * 60 * 60 * 24;
+  const baseTimestamp = new Date(1970, 0, 1).valueOf();
+  return (date: Date) => {
+    return Math.round((date.valueOf() - baseTimestamp) / MILLISEC_PER_DAY);
+  };
+})();
+
 function useCalendar({ classNames, formatDay, formatMonthYear, direction, weekdays, minDate, maxDate }) {
   console.log({
     minDate,
     maxDate,
   });
-  const isDisabled = (date) => {
-    if (minDate < date && date < maxDate) {
+
+  const minDateIndex = getDayIndex(minDate);
+  const maxDateIndex = getDayIndex(maxDate);
+
+  console.log(minDateIndex, maxDateIndex);
+
+  const isDisabled = ({ dayIndex }) => {
+    if (minDateIndex <= dayIndex && dayIndex <= maxDateIndex) {
       return false;
     }
     return true;
@@ -128,3 +153,5 @@ function useCalendar({ classNames, formatDay, formatMonthYear, direction, weekda
 }
 
 export default useCalendar;
+
+export { getDayIndex };
