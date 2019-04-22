@@ -20,9 +20,13 @@ import { WindowCalendar } from '../src/core';
 
 ## Basic usage
 
-<WindowCalendar formatMonthYear='' direction='horizontal' weekHeight={24} weekdaysHeight={24} />
+<WindowCalendar 
+min={new Date(1970,0)}
+max={new Date(2020,3)}
+direction='horizontal' weekHeight={24} weekdaysHeight={24}
+/>
 
-<table>
+<!--table>
   <tbody>
     <tr>
       <td>
@@ -41,6 +45,6 @@ import { WindowCalendar } from '../src/core';
       </td>
     </tr>
   </tbody>
-</table>
+</table-->
 
 

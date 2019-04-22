@@ -3,14 +3,14 @@ import { format } from 'date-fns';
 
 interface IFormatDay {
   (
-    { year, month, day, dayIndex }: { year: number; month: number; day: number; dayIndex: number },
+    { year, month, day, dateIndex }: { year: number; month: number; day: number; dateIndex: number },
     strings?: any,
   ): string;
 }
 
 interface IFormatMonthDayYear {
   (
-    { year, month, day, dayIndex }: { year: number; month: number; day: number; dayIndex: number },
+    { year, month, day, dateIndex }: { year: number; month: number; day: number; dateIndex: number },
     strings?: any,
   ): string;
 }
@@ -23,8 +23,8 @@ interface IFormatYear {
   ({ year }: { year: number }, strings?: any): string;
 }
 
-const formatDay: IFormatDay = ({ year, month, day, dayIndex }, strings) => `${day}`;
-// const formatDay: IFormatDay = ({ year, month, day, dayIndex }, strings) => ` ${dayIndex ? dayIndex : ''}`;
+const formatDay: IFormatDay = ({ year, month, day, dateIndex }, strings) => `${day}`;
+// const formatDay: IFormatDay = ({ year, month, day, dateIndex }, strings) => ` ${dateIndex ? dateIndex : ''}`;
 const formatMonthDayYear: IFormatMonthDayYear = ({ year, month, day }, strings) => `${day}`;
 const formatMonthYear: IFormatMonthYear = ({ year, month }, strings) => `${strings.shortMonths[month]} ${year}`;
 const formatYear: IFormatYear = ({ year }, strings) => `${year}`;

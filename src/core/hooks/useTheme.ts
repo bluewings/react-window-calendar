@@ -113,6 +113,9 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight, clientWidth, 
     [_.DAY_DISABLED]: {
       background: '#eee',
     },
+    [_.DAY_TODAY]: {
+      background: 'lightyellow',
+    },
     [_.WEEKDAY_SUN]: { color: 'red' },
     // [_.WEEKDAY_MON]: { color: 'orange' },
     // [_.WEEKDAY_TUE]: { color: 'yellow' },

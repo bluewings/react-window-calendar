@@ -1,12 +1,10 @@
 import { useMemo } from 'react';
 import { differenceInMonths, getYear, getMonth, addMonths, startOfMonth, getDay, getDaysInMonth } from 'date-fns';
-import { getDayIndex } from './useCalendar';
+import { getDateIndex } from './useCalendar';
 
 function useMonths(min: Date, max: Date) {
-  // const MILLISEC_PER_DAY = 1000 * 60 * 60 * 24;
   return useMemo(() => {
     const numOfMonths = differenceInMonths(max, min) + 1;
-    // const baseTimestamp = new Date(1970, 0, 1).valueOf();
     const baseMonth = new Date(getYear(min), getMonth(min), 15);
     const months = [...Array(numOfMonths)].map((e, i) => {
       const currMonth = addMonths(baseMonth, i);
@@ -17,20 +15,34 @@ function useMonths(min: Date, max: Date) {
       const daysInMonth = getDaysInMonth(currMonth);
       const numOfWeeks = Math.ceil((startDay + daysInMonth) / 7);
       const headerSpaceRequired = startDay < 3;
-      const firstDayIndex = getDayIndex(firstDay);
-      // Math.round((firstDay.valueOf() - baseTimestamp) / MILLISEC_PER_DAY);
+      const firstDateIndex = getDateIndex(firstDay);
       return {
         date: new Date(year, month),
         year,
         month,
         startDay,
         daysInMonth,
-        firstDayIndex,
+        firstDateIndex,
+        monthIndex: i,
         numOfWeeks,
         headerSpaceRequired,
       };
     });
-    return months;
+    const monthDict: any = months.reduce(
+      (accum, curr) => ({
+        ...accum,
+        [curr.firstDateIndex]: curr,
+      }),
+      {},
+    );
+    console.log(monthDict);
+    // const
+
+    const getTargetMonth = (date: Date) => {
+      const index = getDateIndex(startOfMonth(date));
+      return monthDict[index];
+    };
+    return [months, getTargetMonth];
   }, [min, max]);
 }
 

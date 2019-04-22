@@ -153,7 +153,7 @@ const rootStyle = css({
 });
 
 const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
-  const [min, minDate, max, maxDate] = useDates(props.min, props.minDate, props.max, props.maxDate);
+  const [min, minDate, max, maxDate, today] = useDates(props.min, props.minDate, props.max, props.maxDate);
 
   // const min = useMemo(() => {
   //   return props.min || new Date(2000, 0);
@@ -193,7 +193,9 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     strings,
   );
 
-  const allMonths = useMonths(min, max);
+  const [allMonths, findMonth] = useMonths(min, max);
+
+  const thisMonth = findMonth(today);
 
   const weekdays = useWeekdays(classNames, strings);
 
@@ -205,6 +207,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     weekdays,
     minDate,
     maxDate,
+    today,
   });
 
   // console.log('> strings', strings);
@@ -310,28 +313,34 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   const months = allMonths.length;
 
-  let windowGridProps = {
-    fixedTopCount: 1,
-    rowCount: months,
-    rowHeight: rowHeight,
-    columnCount: 1,
-    columnWidth: 100,
-    // width: 280,
-    height: 400,
-    fillerColumn: 'stretch',
-  };
+  let windowGridProps;
 
   if (direction === Direction.HORIZONTAL) {
-    console.log('> scrollbarHeight', scrollbarHeight);
+    // console.log('> scrollbarHeight', scrollbarHeight);
     windowGridProps = {
       // fixedTopCount: 1,
       columnCount: months,
       columnWidth: clientWidth / numOfCalendars,
       rowCount: 1,
       rowHeight: 100,
+      defaultColumnIndex: thisMonth.monthIndex,
+
       height: weekHeight * 7 + weekdaysHeight + scrollbarHeight,
       fillerRow: 'stretch',
       scrollSnap: true,
+    };
+  } else {
+    windowGridProps = {
+      fixedTopCount: 1,
+      rowCount: months,
+      rowHeight: rowHeight,
+      columnCount: 1,
+      columnWidth: 100,
+      // width: 280,
+
+      height: 400,
+      defaultRowIndex: thisMonth.monthIndex + 1,
+      fillerColumn: 'stretch',
     };
   }
 
@@ -340,6 +349,8 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
     direction === Direction.HORIZONTAL ? classNames.HORIZONTAL : classNames.VERTICAL,
   ].join(' ');
+
+  console.log(windowGridProps);
 
   return (
     <>

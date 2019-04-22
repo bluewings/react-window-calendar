@@ -77,6 +77,7 @@ const CLASSNAMES = {
   HORIZONTAL: 'horizontal',
   VERTICAL: 'vertical',
   DAY_DISABLED: 'day-disabled',
+  DAY_TODAY: 'day-today',
   WEEKDAY_SUN: 'weekday-sun',
   WEEKDAY_MON: 'weekday-mon',
   WEEKDAY_TUE: 'weekday-tue',
