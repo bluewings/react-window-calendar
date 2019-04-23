@@ -97,10 +97,23 @@ const Calendar = (
   );
 };
 
+const DateFixed = (() => {
+  const timezoneOffset = new Date().getTimezoneOffset();
+  return (date: Date): Date => {
+    const offsetDiff = timezoneOffset - date.getTimezoneOffset();
+    if (offsetDiff) {
+      const newDate = new Date(date);
+      newDate.setMinutes(newDate.getMinutes() + offsetDiff);
+      return newDate;
+    }
+    return date;
+  };
+})();
+
 const getDateIndex = (() => {
   const MILLISEC_PER_DAY = 1000 * 60 * 60 * 24;
-  const baseTimestamp = new Date(1970, 0, 1).valueOf();
-  return (date: Date) => Math.round((startOfDay(date).valueOf() - baseTimestamp) / MILLISEC_PER_DAY);
+  const baseTimestamp = DateFixed(new Date(1970, 0, 1)).valueOf();
+  return (date: Date) => (DateFixed(startOfDay(date)).valueOf() - baseTimestamp) / MILLISEC_PER_DAY;
 })();
 
 function useCalendar({

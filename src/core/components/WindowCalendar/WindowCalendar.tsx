@@ -473,6 +473,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
               onResize={handleResize}
               {...windowGridProps}
               guideline={false}
+              overscanCount={2}
             >
               {Cell}
             </WindowGrid>

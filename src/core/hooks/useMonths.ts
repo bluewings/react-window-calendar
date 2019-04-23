@@ -2,6 +2,19 @@ import { useMemo } from 'react';
 import { differenceInMonths, getYear, getMonth, addMonths, startOfMonth, getDay, getDaysInMonth } from 'date-fns';
 import { getDateIndex } from './useCalendar';
 
+const DateFixed = (() => {
+  const timezoneOffset = new Date().getTimezoneOffset();
+  return (...args: any[]): Date => {
+    // @ts-ignore
+    const date = new Date(...args);
+    const offsetDiff = timezoneOffset - date.getTimezoneOffset();
+    if (offsetDiff) {
+      date.setMinutes(date.getMinutes() + offsetDiff);
+    }
+    return date;
+  };
+})();
+
 function useMonths(min: Date, max: Date) {
   return useMemo(() => {
     const numOfMonths = differenceInMonths(max, min) + 1;
