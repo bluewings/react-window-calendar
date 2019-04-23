@@ -364,6 +364,15 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     direction === Direction.HORIZONTAL ? classNames.HORIZONTAL : classNames.VERTICAL,
   ].join(' ');
 
+  const compareDate = (a, b) => {
+    const c = a.valueOf();
+    const d = b.valueOf();
+    if (a === b) {
+      return 0;
+    }
+    return a > b ? 1 : -1;
+  };
+
   const updateSelected = useRef();
   updateSelected.current = (date) => {
     // let next = [date];
@@ -372,7 +381,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     if (props.dateRangeType === DateRangeType.RANGE) {
       let prev = selected[0] || [];
       if (prev && prev.length < 2) {
-        next = [[...prev, date].sort().reverse()];
+        next = [[...prev, date].sort(compareDate)];
       } else {
         next = [[date]];
       }

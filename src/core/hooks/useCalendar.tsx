@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import { startOfDay } from 'date-fns';
+import _default from 'react-window-grid/dist/components/WindowGrid/WindowGrid';
 
 const NUM_OF_DAYS_IN_WEEK = 7;
 
@@ -148,19 +149,24 @@ function useCalendar({
   };
 
   const { indices, ranges } = selected.reduce(
-    (accum, e) => {
-      if (Array.isArray(e)) {
-        if (e.length === 2) {
-          return {
-            ...accum,
-            ranges: [...accum.ranges, [getDateIndex(e[0]), getDateIndex(e[1])].sort()],
-          };
-        }
-        return accum;
+    (accum, _e) => {
+      if (Array.isArray(_e)) {
+        // if (e.length === 2) {
+
+        // let _ranges =
+
+        // let tmp = e.length === 1
+        let e = _e.length === 1 ? [_e[0], _e[0]] : _e;
+        return {
+          ...accum,
+          ranges: [...accum.ranges, [getDateIndex(e[0]), getDateIndex(e[1])]],
+        };
+        // }
+        // return accum;
       }
       return {
         ...accum,
-        indices: [...accum.indices, getDateIndex(e)],
+        indices: [...accum.indices, getDateIndex(_e)],
       };
 
       // return accum;
@@ -185,19 +191,22 @@ function useCalendar({
       });
     };
   } else if (ranges && ranges.length > 0) {
+    let _ranges = ranges.map((e) => {
+      return e.length === 1 ? [e[0], e[0]] : e;
+    });
     isSelected = ({ dateIndex }) => {
-      return ranges.find(([e1, e2]) => {
+      return _ranges.find(([e1, e2]) => {
         return e1 <= dateIndex && dateIndex <= e2;
       });
     };
 
     isSelectedStart = ({ dateIndex }) => {
-      return ranges.find(([e1]) => {
+      return _ranges.find(([e1]) => {
         return e1 === dateIndex;
       });
     };
     isSelectedEnd = ({ dateIndex }) => {
-      return ranges.find(([e1, e2]) => {
+      return _ranges.find(([e1, e2]) => {
         return e2 === dateIndex;
       });
     };

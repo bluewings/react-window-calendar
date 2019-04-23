@@ -124,6 +124,7 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight, clientWidth, 
         //   content: '""',
         //   // background: 'yellow',
         // },
+        cursor: 'pointer',
       },
 
       //     // content: '123',
