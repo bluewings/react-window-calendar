@@ -18,10 +18,12 @@ import {
 import { format, addDays } from 'date-fns';
 import { css } from 'emotion';
 import { DateInput } from '../../hooks/useDates';
+import { ClassNames } from '../../hooks/useClassNames';
+import { ThemeFunction } from '../../hooks/useTheme';
+import { CalendarStrings } from '../../hooks/useStrings';
+import { IFormatDay, IFormatMonthDayYear, IFormatMonthYear, IFormatYear } from '../../hooks/useFormats';
 
 import styles from './WindowCalendar.module.scss';
-
-type ScrollEvent = SyntheticEvent<HTMLDivElement>;
 
 enum Direction {
   VERTICAL = 'vertical',
@@ -34,35 +36,6 @@ enum DateRangeType {
   WEEK = 'week',
   MONTH = 'month',
 }
-// type WindowCalendarProps222 = {
-//   scrollTop?: number;
-//   scrollLeft?: number;
-//   width?: number;
-//   height?: number;
-
-//   columns?: any;
-//   columnCount: number;
-//   columnWidth: number | Function;
-
-//   rows?: any;
-//   rowCount: number;
-//   rowHeight: number | Function;
-
-//   fixedTopCount?: number;
-//   fixedLeftCount?: number;
-//   fixedRightCount?: number;
-//   fixedBottomCount?: number;
-//   overscanCount?: number;
-
-//   fillerColumn?: 'none' | 'append' | 'stretch' | 'shrink';
-//   fillerRow?: 'none' | 'append' | 'stretch' | 'shrink';
-//   /** 스크롤되는 뷰포트 너비가 특정값 이하로 떨어지면 fixedColumn 이 무효화된다. */
-//   minVisibleScrollViewWidth: number;
-//   minVisibleScrollViewHeight: number;
-
-//   containerStyle?: any;
-//   guideline?: boolean;
-// };
 
 type WindowCalendarProps = {
   scrollTop?: number;
@@ -126,41 +99,22 @@ type WindowCalendarProps = {
   // formatYear
   // (date: Date) => string
 
-  formatDay?: Function;
-  formatMonthDayYear?: Function;
-  formatMonthYear?: Function;
-  formatYear?: Function;
+  formatDay?: IFormatDay | string;
+  formatMonthDayYear?: IFormatMonthDayYear;
+  formatMonthYear?: IFormatMonthYear;
+  formatYear?: IFormatYear;
 
   onSelectDate?: Function;
+
+  weekdaysHeight?: number;
+  weekHeight?: number;
+  classNames?: ClassNames;
+  theme?: ThemeFunction;
+  strings?: CalendarStrings;
 };
 
-const rootStyle = css({
-  position: 'relative',
-  h4: {
-    height: 40,
-    lineHeight: '40px',
-    fontSize: 14,
-    fontWeight: 700,
-
-    padding: 0,
-    margin: 0,
-  },
-  table: {
-    border: 'none',
-    td: {
-      height: 40,
-      padding: 0,
-      textAlign: 'center',
-      fontSize: 14,
-      // background: '#eee',
-      // borderLeft: '1px solid black',
-      // borderBottom: '1px solid black',
-    },
-  },
-});
-
 const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
-  const [min, minDate, max, maxDate, today] = useDates(props.min, props.minDate, props.max, props.maxDate);
+  const [min, minDate, max, maxDate, today]: Date[] = useDates(props.min, props.minDate, props.max, props.maxDate);
 
   // const min = useMemo(() => {
   //   return props.min || new Date(2000, 0);
@@ -202,6 +156,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   const [allMonths, findMonth] = useMonths(min, max);
 
+  // @ts-ignore
   const thisMonth = findMonth(today);
 
   const weekdays = useWeekdays(classNames, strings);
@@ -226,7 +181,17 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   // console.log('> strings', strings);
 
-  const Cell = ({ rowIndex, columnIndex, className, style }) => {
+  const Calendar = ({
+    rowIndex,
+    columnIndex,
+    className,
+    style,
+  }: {
+    rowIndex: number;
+    columnIndex: number;
+    className: string;
+    style: any;
+  }) => {
     let children;
 
     if (direction === Direction.HORIZONTAL) {
@@ -237,6 +202,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
         children = weekdays;
       } else {
         const _rowIndex = rowIndex - 1;
+        // @ts-ignore
         const _month = allMonths[_rowIndex];
         children = calendar(_month);
       }
@@ -252,7 +218,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   // const HEIGHT = 40;
 
   const rowHeight = useMemo(() => {
-    return (rowIndex) => {
+    return (rowIndex: number) => {
       // console.log(2)
       // console.log(rowIndex);
       if (rowIndex === 0) {
@@ -275,18 +241,21 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   const [velo, setVelo] = useState();
 
-  const handleScroll = (scrollInfo) => {
+  const handleScroll = (scrollInfo: any) => {
     if (isScrolling !== scrollInfo.isScrolling) {
       setIsScrolling(scrollInfo.isScrolling);
     }
     if (rowIdx !== scrollInfo.rowStartIndex - 1) {
       setRowIdx(scrollInfo.rowStartIndex - 1);
     }
+    // @ts-ignore
     if (scrollInfo.isScrolling && tmp.current.last && tmp.current.last.isScrolling) {
       setVelo(
         Math.abs(
-          ~~(
+          ~~// @ts-ignore
+          (
             ((scrollInfo.scrollTop - tmp.current.last.scrollTop) /
+              // @ts-ignore
               (scrollInfo.eventTime - tmp.current.last.eventTime)) *
             1000
           ),
@@ -295,12 +264,13 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     } else {
       setVelo(null);
     }
+    // @ts-ignore
     tmp.current.last = scrollInfo;
   };
 
   const [scrollbarHeight, setScrollbarHeight] = useState(0);
 
-  const handleResize = (size) => {
+  const handleResize = (size: any) => {
     if (clientWidth !== size.clientWidth) {
       setClientWidth(size.clientWidth);
     }
@@ -317,17 +287,19 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     aaa = formatMonthYear({ year, month });
   }
 
-  const inputEl = useRef(null);
+  // const inputEl = useRef(null);
 
-  const handleClick = () => {
-    console.log(inputEl.current);
+  // const handleClick = () => {
+  //   console.log(inputEl.current);
 
-    inputEl.current.scrollTo({ rowIndex: 100, duration: 500, easing: 'easeInOutCubic' });
-  };
+  //   inputEl.current.scrollTo({ rowIndex: 100, duration: 500, easing: 'easeInOutCubic' });
+  // };
 
   const months = allMonths.length;
 
   let windowGridProps;
+
+  // console.log(thisMonth)
 
   if (direction === Direction.HORIZONTAL) {
     // console.log('> scrollbarHeight', scrollbarHeight);
@@ -364,7 +336,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     direction === Direction.HORIZONTAL ? classNames.HORIZONTAL : classNames.VERTICAL,
   ].join(' ');
 
-  const compareDate = (a, b) => {
+  const compareDate = (a: Date, b: Date) => {
     const c = a.valueOf();
     const d = b.valueOf();
     if (a === b) {
@@ -373,8 +345,9 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     return a > b ? 1 : -1;
   };
 
-  const updateSelected = useRef();
-  updateSelected.current = (date) => {
+  const updateSelected = useRef<Function>();
+
+  updateSelected.current = (date: Date) => {
     // let next = [date];
     let next;
 
@@ -388,7 +361,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     } else {
       next = [date];
     }
-
+    // @ts-ignore
     setSelected(next);
     return next;
   };
@@ -403,53 +376,55 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   // React.useEffect(())
 
-  const [hover, setHover] = useState(null);
+  // const [hover, setHover] = useState(null);
 
-  const hoverRef = useRef();
-  hoverRef.current = hover;
+  // const hoverRef = useRef();
+  // hoverRef.current = hover;
 
   const ownEvents = useMemo(() => {
     return {
-      mouseover: {
-        [`.${classNames.DAY}`]: (event, ui) => {
-          return;
+      // mouseover: {
+      //   [`.${classNames.DAY}`]: (event, ui) => {
+      //     return;
 
-          console.log('mouseover', ui.date);
-          console.log(hoverRef.current);
-          if (
-            ui.date &&
-            hoverRef.current &&
-            typeof hoverRef.current.toString === 'function' &&
-            hoverRef.current.toString() === ui.date.toString()
-          ) {
-            return;
-          }
-          setHover(ui.date);
-        },
-      },
-      mouseout: {
-        // [`.${classNames.DAY}`]: (event, ui) => {
-        '*': (event, ui) => {
-          return;
+      //     console.log('mouseover', ui.date);
+      //     console.log(hoverRef.current);
+      //     if (
+      //       ui.date &&
+      //       hoverRef.current &&
+      //       typeof hoverRef.current.toString === 'function' &&
+      //       hoverRef.current.toString() === ui.date.toString()
+      //     ) {
+      //       return;
+      //     }
+      //     setHover(ui.date);
+      //   },
+      // },
+      // mouseout: {
+      //   // [`.${classNames.DAY}`]: (event, ui) => {
+      //   '*': (event, ui) => {
+      //     return;
 
-          console.log('mouseout', ui.date);
-          if (hoverRef.current) {
-            setHover(null);
-          }
-          // setHove
-        },
-      },
+      //     console.log('mouseout', ui.date);
+      //     if (hoverRef.current) {
+      //       setHover(null);
+      //     }
+      //     // setHove
+      //   },
+      // },
       click: {
-        [`.${classNames.DAY}`]: (event, ui) => {
+        [`.${classNames.DAY}`]: (event: SyntheticEvent, ui: any) => {
           // console.log()
-          console.log(ui);
-          console.log(isEnabled(ui.date));
+          // console.log(ui);
+          // console.log(isEnabled(ui.date));
           if (ui && ui.date && isEnabled(ui.date)) {
             // props.onSelectDate()
             // props.onSelectDate(ui.date);
-            const next = updateSelected.current(ui.date);
-            if (props.onSelectDate) {
-              props.onSelectDate(next);
+            if (updateSelected.current) {
+              const next = updateSelected.current(ui.date);
+              if (props.onSelectDate) {
+                props.onSelectDate(next);
+              }
             }
           }
           // console.log(event, ui);
@@ -470,14 +445,11 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
       {/* <p onClick={handleClick}>
         {velo} {isScrolling ? 'scrolling' : 'no-scrolling'} - {aaa}
       </p> */}
-      <pre>{JSON.stringify(hover)}&nbsp;</pre>
+      {/* <pre>{JSON.stringify(hover)}&nbsp;</pre> */}
       <div className={theme}>
         <div className={rootClassName}>
-          <div className={rootStyle} {...eventHandlers}>
+          <div {...eventHandlers}>
             <WindowGrid
-              ref={inputEl}
-              // width={700}
-
               scrollSnap={props.scrollSnap}
               onScroll={handleScroll}
               onResize={handleResize}
@@ -485,7 +457,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
               guideline={false}
               overscanCount={2}
             >
-              {Cell}
+              {Calendar}
             </WindowGrid>
           </div>
           <div
@@ -496,7 +468,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
             <div />
           </div>
         </div>
-        <pre>{JSON.stringify(selected, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(selected, null, 2)}</pre> */}
       </div>
     </>
   );

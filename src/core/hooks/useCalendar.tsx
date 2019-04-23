@@ -10,7 +10,7 @@ const identity = (e: any) => e;
 const emptyArray = (size: number): any[] => new Array(size).fill((e: any) => null);
 
 const Calendar = (
-  _month,
+  _month: any,
   {
     classNames,
     formatDay,
@@ -23,6 +23,18 @@ const Calendar = (
     isToday: _isToday,
     isSelectedStart: _isSelectedStart,
     isSelectedEnd: _isSelectedEnd,
+  }: {
+    classNames: any;
+    formatDay: Function;
+    formatMonthYear: Function;
+    direction: any;
+    weekdays: any;
+    isDisabled: Function;
+    isEnabled: Function;
+    isSelected: Function;
+    isToday: Function;
+    isSelectedStart: Function;
+    isSelectedEnd: Function;
   },
 ) => {
   const { year, month, startDay, daysInMonth, firstDateIndex } = _month;
@@ -35,10 +47,6 @@ const Calendar = (
     classNames.WEEKDAY_FRI,
     classNames.WEEKDAY_SAT,
   ];
-
-  const hdrStyle = {
-    position: _month.headerSpaceRequired || direction === 'horizontal' ? 'relative' : 'absolute',
-  };
 
   const fillerCount = (NUM_OF_DAYS_IN_WEEK - ((startDay + daysInMonth) % NUM_OF_DAYS_IN_WEEK)) % NUM_OF_DAYS_IN_WEEK;
 
@@ -82,9 +90,16 @@ const Calendar = (
 
   const weeks = emptyArray(days.length / NUM_OF_DAYS_IN_WEEK).map((_) => days.splice(0, NUM_OF_DAYS_IN_WEEK));
 
+  // const hdrStyle = ;
+
   return (
     <div className={classNames.MONTH} data-year={year} data-month={month}>
-      <div className={classNames.MONTH_TITLE} style={hdrStyle}>
+      <div
+        className={classNames.MONTH_TITLE}
+        style={{
+          position: _month.headerSpaceRequired || direction === 'horizontal' ? 'relative' : 'absolute',
+        }}
+      >
         {formatMonthYear({ year, month })}
       </div>
 
@@ -119,7 +134,7 @@ const DateFixed = (() => {
 const getDateIndex = (() => {
   const MILLISEC_PER_DAY = 1000 * 60 * 60 * 24;
   const baseTimestamp = DateFixed(new Date(1970, 0, 1)).valueOf();
-  return (date: Date) => (DateFixed(startOfDay(date)).valueOf() - baseTimestamp) / MILLISEC_PER_DAY;
+  return (date: Date) => Math.round((DateFixed(startOfDay(date)).valueOf() - baseTimestamp) / MILLISEC_PER_DAY);
 })();
 
 function useCalendar({
@@ -132,6 +147,16 @@ function useCalendar({
   maxDate,
   today,
   selected,
+}: {
+  classNames: any;
+  formatDay: any;
+  formatMonthYear: any;
+  direction: any;
+  weekdays: any;
+  minDate: Date;
+  maxDate: Date;
+  today: Date;
+  selected: any;
 }) {
   // console.log({
   //   minDate,
@@ -149,14 +174,14 @@ function useCalendar({
     return true;
   };
 
-  const isEnabled = ({ day, dateIndex }: { dateIndex: number }) => {
+  const isEnabled = ({ day, dateIndex }: { day: any; dateIndex: number }) => {
     return !isDisabled({ dateIndex }) && day > 0;
     // return true;
   };
 
-  const isEnabled_ = (date) => {
+  const isEnabled_ = (date: Date) => {
     const dateIndex = getDateIndex(date);
-    console.log(date, dateIndex);
+    // console.log(date, dateIndex);
 
     return isEnabled({ day: date.getDate(), dateIndex });
     // return true;
@@ -172,7 +197,7 @@ function useCalendar({
   };
 
   const { indices, ranges } = selected.reduce(
-    (accum, _e) => {
+    (accum: any, _e: any) => {
       if (Array.isArray(_e)) {
         // if (e.length === 2) {
 
@@ -209,27 +234,27 @@ function useCalendar({
   let isSelectedEnd = (e: any) => false;
   if (indices && indices.length > 0) {
     isSelected = ({ dateIndex }) => {
-      return indices.find((e) => {
+      return indices.find((e: number) => {
         return dateIndex === e;
       });
     };
   } else if (ranges && ranges.length > 0) {
-    let _ranges = ranges.map((e) => {
+    let _ranges = ranges.map((e: any) => {
       return e.length === 1 ? [e[0], e[0]] : e;
     });
     isSelected = ({ dateIndex }) => {
-      return _ranges.find(([e1, e2]) => {
+      return _ranges.find(([e1, e2]: [any, any]) => {
         return e1 <= dateIndex && dateIndex <= e2;
       });
     };
 
     isSelectedStart = ({ dateIndex }) => {
-      return _ranges.find(([e1]) => {
+      return _ranges.find(([e1]: [any]) => {
         return e1 === dateIndex;
       });
     };
     isSelectedEnd = ({ dateIndex }) => {
-      return _ranges.find(([e1, e2]) => {
+      return _ranges.find(([e1, e2]: [any, any]) => {
         return e2 === dateIndex;
       });
     };
@@ -250,7 +275,7 @@ function useCalendar({
       isSelectedEnd,
     };
 
-    return (month) => {
+    return (month: any) => {
       // console.log(month);
 
       return Calendar(month, opt);

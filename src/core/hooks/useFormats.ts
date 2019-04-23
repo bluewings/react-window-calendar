@@ -1,25 +1,25 @@
 import { useMemo } from 'react';
 import { format } from 'date-fns';
 
-interface IFormatDay {
+export interface IFormatDay {
   (
     { year, month, day, dateIndex }: { year: number; month: number; day: number; dateIndex: number },
     strings?: any,
   ): string;
 }
 
-interface IFormatMonthDayYear {
+export interface IFormatMonthDayYear {
   (
     { year, month, day, dateIndex }: { year: number; month: number; day: number; dateIndex: number },
     strings?: any,
   ): string;
 }
 
-interface IFormatMonthYear {
+export interface IFormatMonthYear {
   ({ year, month }: { year: number; month: number }, strings?: any): string;
 }
 
-interface IFormatYear {
+export interface IFormatYear {
   ({ year }: { year: number }, strings?: any): string;
 }
 
@@ -36,7 +36,7 @@ const defaultFormats = {
   formatYear,
 };
 
-function useFormat(customFormat: Function | string, defaultFormat: Function, strings: any): any {
+function useFormat(customFormat: Function | string | undefined, defaultFormat: Function, strings: any): any {
   return useMemo(() => {
     let formatFunc = defaultFormat;
     if (typeof customFormat === 'function') {
@@ -50,10 +50,10 @@ function useFormat(customFormat: Function | string, defaultFormat: Function, str
 }
 
 function useFormats(
-  formatDay: IFormatDay | string,
-  formatMonthDayYear: IFormatMonthDayYear | string,
-  formatMonthYear: IFormatMonthYear | string,
-  formatYear: IFormatYear | string,
+  formatDay: IFormatDay | string | undefined,
+  formatMonthDayYear: IFormatMonthDayYear | string | undefined,
+  formatMonthYear: IFormatMonthYear | string | undefined,
+  formatYear: IFormatYear | string | undefined,
   strings: any,
 ): [IFormatDay, IFormatMonthDayYear, IFormatMonthYear, IFormatYear] {
   return [
