@@ -1,12 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, SyntheticEvent } from 'react';
 
 const serialize = (() => {
   const replacer = (key: string, value: any) => (typeof value === 'function' ? value.toString() : value);
   return (value: any) => JSON.stringify(value, replacer);
 })();
 
-function useEventHandlers(events, rows) {
-  const dict = {
+function useEventHandlers(events: any) {
+  const dict: any = {
     click: 'onClick',
     mouseover: 'onMouseOver',
     mouseout: 'onMouseOut',
@@ -16,7 +16,7 @@ function useEventHandlers(events, rows) {
   // console.log(events);
 
   const eventHandlers = useMemo(() => {
-    const entries = (target) => {
+    const entries = (target: any) => {
       return Object.keys(target).map((k) => {
         return [k, target[k]];
       });
@@ -28,7 +28,7 @@ function useEventHandlers(events, rows) {
 
     // console.log();
 
-    const getAttrFromClosest = (source, attrName) => {
+    const getAttrFromClosest = (source: any, attrName: string) => {
       const target = source.getAttribute(attrName) ? source : source.closest(`[${attrName}]`);
       if (target) {
         return target.getAttribute(attrName);
@@ -36,7 +36,7 @@ function useEventHandlers(events, rows) {
       return null;
     };
 
-    const getEventTarget = (source, selector) => {
+    const getEventTarget = (source: any, selector: string) => {
       const target = source.matches(selector) ? source : source.closest(selector);
 
       if (target) {
@@ -82,7 +82,7 @@ function useEventHandlers(events, rows) {
       return null;
     };
 
-    const handlerFactory = (details) => {
+    const handlerFactory = (details: any) => {
       const handles = entries(details).map(([selector, handler]) => {
         return {
           selector,
@@ -90,7 +90,7 @@ function useEventHandlers(events, rows) {
         };
       });
 
-      return (event) => {
+      return (event: SyntheticEvent) => {
         // console.log(event.target);
         // console.log(handles);
         handles.forEach((e) => {
@@ -115,7 +115,7 @@ function useEventHandlers(events, rows) {
       return accum;
     }, {});
     return allEvts;
-  }, [eventsHash, rows]);
+  }, [eventsHash]);
 
   return eventHandlers;
 }

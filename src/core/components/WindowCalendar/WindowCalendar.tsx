@@ -432,12 +432,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     };
   }, []);
 
-  const eventHandlers = useEventHandlers(
-    {
-      ...ownEvents,
-    },
-    [],
-  );
+  const eventHandlers = useEventHandlers({ ...ownEvents });
 
   return (
     <>
