@@ -2,9 +2,24 @@ import { useMemo } from 'react';
 import { css } from 'emotion';
 import { ClassNames } from './useClassNames';
 
-export type ThemeFunction = (classNames: ClassNames) => StringAnyMap;
+export type ThemeFunction = (classNames: ClassNames, styleProps: any) => StringAnyMap;
 
-function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight, clientWidth, gutter, direction }) {
+function defaultTheme(
+  _: ClassNames,
+  {
+    weekdaysHeight,
+    weekHeight,
+    clientWidth,
+    gutter,
+    direction,
+  }: {
+    weekdaysHeight: any;
+    weekHeight: any;
+    clientWidth: any;
+    gutter: any;
+    direction: any;
+  },
+) {
   const paddingH = (direction === 'horizontal' ? gutter : 0) / 2;
 
   const titlePadH = ~~((clientWidth / 7 - 16) / 2) || 0;

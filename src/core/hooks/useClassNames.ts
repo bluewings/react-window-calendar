@@ -63,6 +63,24 @@ export type ClassNames = {
   IS_SCROLLING: string;
   IS_NOT_SCROLLING: string;
 
+  CELL: string;
+
+  DAY_ENABLED: string;
+  DAY_DISABLED: string;
+
+  DAY_TODAY: string;
+  DAY_SELECTED: string;
+  DAY_SELECTED_START: string;
+  DAY_SELECTED_END: string;
+
+  WEEKDAY_SUN: string;
+  WEEKDAY_MON: string;
+  WEEKDAY_TUE: string;
+  WEEKDAY_WED: string;
+  WEEKDAY_THU: string;
+  WEEKDAY_FRI: string;
+  WEEKDAY_SAT: string;
+
   [key: string]: string | StringAnyMap;
 };
 
@@ -93,30 +111,30 @@ const CLASSNAMES = {
 
   // WEEKDAYS: 'rwc-cell',
 
-  COL_ODD: 'rwc-col-odd',
-  COL_EVEN: 'rwc-col-even',
-  COL_FIRST: 'rwc-col-first',
-  COL_LAST: 'rwc-col-last',
+  // COL_ODD: 'rwc-col-odd',
+  // COL_EVEN: 'rwc-col-even',
+  // COL_FIRST: 'rwc-col-first',
+  // COL_LAST: 'rwc-col-last',
 
+  // // ROW_ODD: 'rwc-row-odd',
   // ROW_ODD: 'rwc-row-odd',
-  ROW_ODD: 'rwc-row-odd',
-  ROW_EVEN: 'rwc-row-even',
-  ROW_FIRST: 'rwc-row-first',
-  ROW_LAST: 'rwc-row-last',
+  // ROW_EVEN: 'rwc-row-even',
+  // ROW_FIRST: 'rwc-row-first',
+  // ROW_LAST: 'rwc-row-last',
 
-  SECTION: 'rwc-section',
+  // SECTION: 'rwc-section',
 
-  SECTION_RIGHT: 'rwc-section-right',
+  // SECTION_RIGHT: 'rwc-section-right',
 
-  GUIDELINE: 'rwc-guideline',
+  // GUIDELINE: 'rwc-guideline',
 
-  SCROLL_TOP: 'rwc-scroll-top',
-  SCROLL_LEFT: 'rwc-scroll-left',
-  SCROLL_RIGHT: 'rwc-scroll-right',
-  SCROLL_BOTTOM: 'rwc-scroll-bottom',
+  // SCROLL_TOP: 'rwc-scroll-top',
+  // SCROLL_LEFT: 'rwc-scroll-left',
+  // SCROLL_RIGHT: 'rwc-scroll-right',
+  // SCROLL_BOTTOM: 'rwc-scroll-bottom',
 
-  IS_SCROLLING: 'rwc-is-scrolling',
-  IS_NOT_SCROLLING: 'rwc-is-not-scrolling',
+  // IS_SCROLLING: 'rwc-is-scrolling',
+  // IS_NOT_SCROLLING: 'rwc-is-not-scrolling',
 
   // HORIZONTAL: 'rwc-section-top',
   // ROW_EVEN: 'rwc-',
