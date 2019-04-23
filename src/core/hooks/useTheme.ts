@@ -101,7 +101,10 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight, clientWidth, 
       height: weekHeight,
       // height: weekdaysHeight,
     },
-    [_.DAY]: {
+    // [_.DAY]: {
+    //   background: 'yellow'
+    // },
+    [_.CELL]: {
       display: 'flex',
       flexBasis: 0,
       flexGrow: 1,
@@ -124,19 +127,14 @@ function defaultTheme(_: ClassNames, { weekdaysHeight, weekHeight, clientWidth, 
         //   content: '""',
         //   // background: 'yellow',
         // },
-        cursor: 'pointer',
       },
-
-      //     // content: '123',
-      //      background: 'yellow',
-      //      height: weekHeight - 4,
-      //     //  '::after': {
-      //       content: '123',
-      //       display: 'block'
-      //     //  }
-
-      //   }
-      // }
+    },
+    [_.DAY_ENABLED]: {
+      // background: 'lightblue',
+      cursor: 'pointer',
+      '&:hover': {
+        background: 'lightblue',
+      },
     },
     [_.DAY_DISABLED]: {
       background: '#eee',

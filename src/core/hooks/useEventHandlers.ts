@@ -13,7 +13,7 @@ function useEventHandlers(events, rows) {
   };
   const eventsHash = serialize(events);
 
-  console.log(events);
+  // console.log(events);
 
   const eventHandlers = useMemo(() => {
     const entries = (target) => {
@@ -47,7 +47,7 @@ function useEventHandlers(events, rows) {
         if (day) {
           const date = new Date(year, month, day);
 
-          console.log(date);
+          // console.log(date);
 
           return {
             target,

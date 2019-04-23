@@ -18,6 +18,7 @@ const Calendar = (
     direction,
     weekdays,
     isDisabled: _isDisabled,
+    isEnabled: _isEnabled,
     isSelected: _isSelected,
     isToday: _isToday,
     isSelectedStart: _isSelectedStart,
@@ -48,13 +49,16 @@ const Calendar = (
   ].map((day, i) => {
     const weekday = i % NUM_OF_DAYS_IN_WEEK;
     const isDisabled = _isDisabled(day);
+    const isEnabled = _isEnabled(day);
     const isSelected = _isSelected(day);
     const isSelectedStart = isSelected && _isSelectedStart(day);
     const isSelectedEnd = isSelected && _isSelectedEnd(day);
     const isToday = _isToday(day);
     const className = [
-      classNames.DAY,
+      classNames.CELL,
+      day.day > 0 && classNames.DAY,
       isDisabled && classNames.DAY_DISABLED,
+      isEnabled && classNames.DAY_ENABLED,
       isToday && classNames.DAY_TODAY,
       isSelected && classNames.DAY_SELECTED,
       isSelectedStart && classNames.DAY_SELECTED_START,
@@ -68,6 +72,7 @@ const Calendar = (
       weekday,
       className,
       isDisabled,
+      isEnabled,
       isSelected,
       isSelectedStart,
       isSelectedEnd,
@@ -144,6 +149,24 @@ function useCalendar({
     return true;
   };
 
+  const isEnabled = ({ day, dateIndex }: { dateIndex: number }) => {
+    return !isDisabled({ dateIndex }) && day > 0;
+    // return true;
+  };
+
+  const isEnabled_ = (date) => {
+    const dateIndex = getDateIndex(date);
+    console.log(date, dateIndex);
+
+    return isEnabled({ day: date.getDate(), dateIndex });
+    // return true;
+  };
+
+  // const isEnabled_ = ({ day, dateIndex }: { dateIndex: number }) => {
+  //   return !isDisabled({ dateIndex }) && day > 0
+  //   // return true;
+  // };
+
   const isToday = ({ dateIndex }: { dateIndex: number }) => {
     return todayIndex === dateIndex;
   };
@@ -212,7 +235,7 @@ function useCalendar({
     };
   }
 
-  return useMemo(() => {
+  const calendar = useMemo(() => {
     const opt = {
       classNames,
       formatDay,
@@ -220,6 +243,7 @@ function useCalendar({
       direction,
       weekdays,
       isDisabled,
+      isEnabled,
       isToday,
       isSelected,
       isSelectedStart,
@@ -231,7 +255,19 @@ function useCalendar({
 
       return Calendar(month, opt);
     };
-  }, [classNames, formatDay, formatMonthYear, direction, weekdays, isSelected, isSelectedStart, isSelectedEnd]);
+  }, [
+    classNames,
+    formatDay,
+    formatMonthYear,
+    direction,
+    weekdays,
+    isEnabled,
+    isSelected,
+    isSelectedStart,
+    isSelectedEnd,
+  ]);
+
+  return [calendar, isEnabled_];
 }
 
 export default useCalendar;

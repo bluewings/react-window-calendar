@@ -212,7 +212,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
   const [selected, setSelected] = useState([]);
 
-  const calendar = useCalendar({
+  const [calendar, isEnabled] = useCalendar({
     classNames,
     formatDay,
     formatMonthYear,
@@ -346,7 +346,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   } else {
     windowGridProps = {
       fixedTopCount: 1,
-      rowCount: months,
+      rowCount: months + 1,
       rowHeight: rowHeight,
       columnCount: 1,
       columnWidth: 100,
@@ -442,8 +442,9 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
       click: {
         [`.${classNames.DAY}`]: (event, ui) => {
           // console.log()
-
-          if (ui && ui.date) {
+          console.log(ui);
+          console.log(isEnabled(ui.date));
+          if (ui && ui.date && isEnabled(ui.date)) {
             // props.onSelectDate()
             // props.onSelectDate(ui.date);
             const next = updateSelected.current(ui.date);
