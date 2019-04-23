@@ -237,7 +237,8 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   const [isScrolling, setIsScrolling] = useState(false);
   const [rowIdx, setRowIdx] = useState(0);
 
-  const tmp = useRef({});
+  // @ts-ignore
+  const tmp = useRef<{ last: { scrollTop: number; eventTime: number } }>({});
 
   const [velo, setVelo] = useState();
 
@@ -249,13 +250,11 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
       setRowIdx(scrollInfo.rowStartIndex - 1);
     }
     // @ts-ignore
-    if (scrollInfo.isScrolling && tmp.current.last && tmp.current.last.isScrolling) {
+    if (scrollInfo.isScrolling && tmp.current && tmp.current.last && tmp.current.last.isScrolling) {
       setVelo(
         Math.abs(
-          ~~// @ts-ignore
-          (
+          ~~(
             ((scrollInfo.scrollTop - tmp.current.last.scrollTop) /
-              // @ts-ignore
               (scrollInfo.eventTime - tmp.current.last.eventTime)) *
             1000
           ),

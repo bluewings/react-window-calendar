@@ -15,7 +15,7 @@ import { getDateIndex } from './useCalendar';
 //   };
 // })();
 
-type MonthInfo = {
+export type MonthInfo = {
   year: number;
   month: number;
   startDay: number;

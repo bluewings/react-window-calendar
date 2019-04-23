@@ -140,12 +140,13 @@ const CLASSNAMES = {
   // ROW_EVEN: 'rwc-',
 };
 
-function useClassNames(classNames: any) {
+function useClassNames(classNames: any): ClassNames {
   const hash = useMemo(() => {
     return JSON.stringify(classNames);
   }, [classNames]);
 
-  return useMemo(() => {
+  return useMemo((): ClassNames => {
+    // @ts-ignore
     return Object.keys(classNames || {}).reduce(
       (accum, key) => {
         return {

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import { startOfDay } from 'date-fns';
-import _default from 'react-window-grid/dist/components/WindowGrid/WindowGrid';
+// import _default from 'react-window-grid/dist/components/WindowGrid/WindowGrid';
+import { MonthInfo } from './useMonths';
 
 const NUM_OF_DAYS_IN_WEEK = 7;
 
@@ -10,7 +11,7 @@ const identity = (e: any) => e;
 const emptyArray = (size: number): any[] => new Array(size).fill((e: any) => null);
 
 const Calendar = (
-  _month: any,
+  _month: MonthInfo,
   {
     classNames,
     formatDay,
@@ -157,7 +158,8 @@ function useCalendar({
   maxDate: Date;
   today: Date;
   selected: any;
-}) {
+  // }):  [(month: MonthInfo) => JSX.Element, (date: Date) => boolean] {
+}): [(month: MonthInfo) => JSX.Element, (date: Date) => boolean] {
   // console.log({
   //   minDate,
   //   maxDate,
@@ -225,8 +227,8 @@ function useCalendar({
     },
   );
 
-  console.log(indices);
-  console.log(ranges);
+  // console.log(indices);
+  // console.log(ranges);
 
   // console.log(_selected);
   let isSelected = (e: any) => false;
@@ -275,7 +277,7 @@ function useCalendar({
       isSelectedEnd,
     };
 
-    return (month: any) => {
+    return (month: MonthInfo) => {
       // console.log(month);
 
       return Calendar(month, opt);
