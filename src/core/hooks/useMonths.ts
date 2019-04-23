@@ -30,7 +30,7 @@ function useMonths(min: Date, max: Date): [MonthInfo[], Function] {
   return useMemo(() => {
     const numOfMonths = differenceInMonths(max, min) + 1;
     const baseMonth = new Date(getYear(min), getMonth(min), 15);
-    const months: MonthInfo[] = [...Array(numOfMonths)].map((e, i) => {
+    const months: MonthInfo[] = new Array(numOfMonths).fill(undefined).map((e, i) => {
       const currMonth = addMonths(baseMonth, i);
       const year = getYear(currMonth);
       const month = getMonth(currMonth);
