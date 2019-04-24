@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import colors from '../constants/colors';
 
-function useColors(props) {
+function useColors() {
   return useMemo(() => {
     return {
       ...colors,
