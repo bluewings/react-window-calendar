@@ -113,6 +113,35 @@ type WindowCalendarProps = {
   strings?: CalendarStrings;
 };
 
+const compareDate = (a: Date, b: Date) => {
+  const c = a.valueOf();
+  const d = b.valueOf();
+  if (a === b) {
+    return 0;
+  }
+  return a > b ? 1 : -1;
+};
+
+function useSelected(_selected: any, dateRangeType: any) {
+  const [selected, setSelected] = useState([]);
+
+  useEffect(() => {
+    // if ()
+    // if ()
+    if (dateRangeType === DateRangeType.RANGE && _selected && _selected.length === 2) {
+      // @ts-ignore
+      setSelected([_selected.map(e => new Date(e))]);
+    } 
+
+
+    // console.log({ dateRangeType, _selected });
+  }, [JSON.stringify(_selected), dateRangeType])
+
+  // console.log('> selected', selected);
+
+  return [selected, setSelected];
+}
+
 const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   const [min, minDate, max, maxDate, today]: Date[] = useDates(props.min, props.minDate, props.max, props.maxDate);
 
@@ -165,7 +194,8 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
   // let tmpD = new Date()
   // tmpD = addDays(tmpD, 3);
 
-  const [selected, setSelected] = useState([]);
+  // @ts-ignore
+  const [selected, setSelected] = useSelected(props.selected, props.dateRangeType);
 
   const [calendar, isEnabled] = useCalendar({
     classNames,
@@ -335,14 +365,6 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     direction === Direction.HORIZONTAL ? classNames.HORIZONTAL : classNames.VERTICAL,
   ].join(' ');
 
-  const compareDate = (a: Date, b: Date) => {
-    const c = a.valueOf();
-    const d = b.valueOf();
-    if (a === b) {
-      return 0;
-    }
-    return a > b ? 1 : -1;
-  };
 
   const updateSelected = useRef<Function>();
 
@@ -351,6 +373,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
     let next;
 
     if (props.dateRangeType === DateRangeType.RANGE) {
+      // @ts-ignore
       let prev = selected[0] || [];
       if (prev && prev.length < 2) {
         next = [[...prev, date].sort(compareDate)];

@@ -67,12 +67,8 @@ function useMonths(min: Date, max: Date): [MonthInfo[], Function] {
       .map((e) => parseInt(e, 10))
       .sort();
 
-    const minIndex = keys[0];
-    const [maxIndex] = keys.slice(-1);
-
-    // console.log({ minIndex, maxIndex });
-
-    // console;
+    const minIndex = Math.min.apply(null, keys);
+    const maxIndex = Math.max.apply(null, keys);
 
     const getTargetMonth = (date: Date) => {
       let index = getDateIndex(startOfMonth(date));

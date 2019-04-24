@@ -1,6 +1,6 @@
 {
   "name": "react-window-calendar",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "dist/react-window-calendar.cjs.js",
   "module": "dist/react-window-calendar.es.js",
   "browser": "dist/react-window-calendar.amd.js",
