@@ -130,12 +130,11 @@ function useSelected(_selected: any, dateRangeType: any) {
     // if ()
     if (dateRangeType === DateRangeType.RANGE && _selected && _selected.length === 2) {
       // @ts-ignore
-      setSelected([_selected.map(e => new Date(e))]);
-    } 
-
+      setSelected([_selected.map((e) => new Date(e))]);
+    }
 
     // console.log({ dateRangeType, _selected });
-  }, [JSON.stringify(_selected), dateRangeType])
+  }, [JSON.stringify(_selected), dateRangeType]);
 
   // console.log('> selected', selected);
 
@@ -364,7 +363,6 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
 
     direction === Direction.HORIZONTAL ? classNames.HORIZONTAL : classNames.VERTICAL,
   ].join(' ');
-
 
   const updateSelected = useRef<Function>();
 

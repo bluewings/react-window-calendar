@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 import { css } from 'emotion';
 import { ClassNames } from './useClassNames';
+import useColors from './useColors';
 
-export type ThemeFunction = (classNames: ClassNames, styleProps: any) => StringAnyMap;
+export type ThemeFunction = (classNames: ClassNames, colors: any, styleProps: any) => StringAnyMap;
 
 function defaultTheme(
   _: ClassNames,
+  colors: any,
   {
     weekdaysHeight,
     weekHeight,
@@ -147,40 +149,56 @@ function defaultTheme(
     [_.DAY_ENABLED]: {
       // background: 'lightblue',
       cursor: 'pointer',
+
+      // background: 'lightblue',
+      // background: colors.blue.base,
       '&:hover': {
-        background: 'lightblue',
+        '>div': {
+          // background: 'lime',
+          background: colors.blue.base,
+          color: '#fff',
+        },
+        // },
       },
     },
     [_.DAY_DISABLED]: {
-      background: '#eee',
+      // background: '#eee',
+      opacity: 0.35,
     },
     [_.DAY_TODAY]: {
-      background: 'lightyellow',
+      // background: 'lightyellow',
+      '>div': {
+        background: colors.grey.light,
+      },
     },
     [_.DAY_SELECTED]: {
       '>div': {
-        background: 'lime',
+        // background: 'lime',
+        background: colors.blue.lighter,
       },
     },
     [_.DAY_SELECTED_START]: {
       '>div': {
-        background: 'red',
+        // background: 'red',
+        background: colors.blue.base,
         color: '#fff',
       },
     },
     [_.DAY_SELECTED_END]: {
       '>div': {
-        background: 'blue',
+        background: colors.blue.base,
         color: '#fff',
       },
     },
-    [_.WEEKDAY_SUN]: { color: 'red' },
-    [_.WEEKDAY_MON]: { color: 'orange' },
-    [_.WEEKDAY_TUE]: { color: 'yellow' },
-    [_.WEEKDAY_WED]: { color: 'green' },
-    [_.WEEKDAY_THU]: { color: 'blue' },
-    [_.WEEKDAY_FRI]: { color: 'pulple' },
-    [_.WEEKDAY_SAT]: { color: 'black' },
+    [_.WEEKDAY_SUN]: {
+      color: colors.red.base,
+    },
+    // [_.WEEKDAY_MON]: { color: 'orange' },
+    // [_.WEEKDAY_TUE]: { color: 'yellow' },
+    // [_.WEEKDAY_WED]: { color: 'green' },
+    // [_.WEEKDAY_THU]: { color: 'blue' },
+    // [_.WEEKDAY_FRI]: { color: 'pulple' },
+    // [_.WEEKDAY_SAT]: { color: 'black' },
 
     // [_.WEEKDAYS]: {
     //   boxSizing: 'border-box',
@@ -224,12 +242,14 @@ function useTheme(theme: ThemeFunction | undefined, classNames: ClassNames, styl
     [classNames],
   );
 
+  const colors = useColors();
+
   return useMemo(
     () =>
-      [defaultTheme(dotClassNames, styleProps), theme && css(theme(dotClassNames, styleProps))]
+      [defaultTheme(dotClassNames, colors, styleProps), theme && css(theme(dotClassNames, colors, styleProps))]
         .filter((e) => e)
         .join(' '),
-    [theme, dotClassNames, JSON.stringify(styleProps)],
+    [theme, dotClassNames, colors, JSON.stringify(styleProps)],
   );
 }
 
