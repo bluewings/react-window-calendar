@@ -8,7 +8,7 @@ const NUM_OF_DAYS_IN_WEEK = 7;
 
 const identity = (e: any) => e;
 
-const emptyArray = (size: number): any[] => new Array(size).fill((e: any) => null);
+const emptyArray = (size: number): any[] => new Array(size).fill(null);
 
 const Calendar = (
   _month: MonthInfo,
