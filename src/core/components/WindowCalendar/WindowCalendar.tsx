@@ -353,7 +353,7 @@ const WindowCalendar: FunctionComponent<WindowCalendarProps> = (props) => {
       columnWidth: 100,
       // width: 280,
 
-      height: 400,
+      height: props.height || 400,
       defaultRowIndex: thisMonth.monthIndex + 1,
       fillerColumn: 'stretch',
     };
